@@ -1,2 +1,0 @@
-# Hello world!
-You have found my site. There'll be things here soon. Unless there aren't, and/or this is the wasteland after the world ended, in which case carry on and fight bravely. I believe in you.
