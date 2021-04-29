@@ -5,12 +5,27 @@
 </head>
 
 <body>
+
 <h1>This page has a heading now</h1>
 <p>Type your text below<p>
 <input id="usertext" style="width:90%">
-<input type="submit" id="submitbutton" value="Done">
+<input type="submit" id="submitbutton" value="Done" onclick="userTextSubmitted()">
 <br>
+<p id="resulttext">Your result will appear here<p>
 <br>
 <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+
+<script>
+function userTextSubmitted() {
+	let userstring = document.getElementById("usertext").value;
+	if(userstring==="") {
+		userstring = "an empty string";
+	}
+	let now = new Date();
+	let nowstring = now.toLocaleTimeString();
+	document.getElementById("resulttext").innerHTML = "Last input was "+userstring+ " at "+nowstring;
+}
+</script> 
+
 </body>
 </html>
