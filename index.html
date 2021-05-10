@@ -2,21 +2,71 @@
 <html lang="en">
 <head>
 <title>kvkontin</title>
+<style>
+
+* {
+	color: white;
+	font-family: Verdana, sans-serif;
+}
+
+input[type=submit] {
+	background-color: #535353;
+}
+
+input[type=text] {
+	color: black;
+}
+
+body {
+  background-color: #002b36;
+}
+
+.full-width-container {
+	display: flex;
+	flex-direction: row;
+}
+
+h1 {
+	animation: color-cycle 60s infinite;
+}
+
+@keyframes color-cycle {
+	00% {color: #ffb4b4;}
+	25% {color: #daffb4;}
+	50% {color: #b4fffc;}
+	75% {color: #dab4ff;}
+	100%{color: #ffb4b4;}
+}
+</style>
 </head>
 
 <body>
-
-<h1>This page has a heading now</h1>
+<h1>kvkontin's assorted oddities</h1>
 <p>Type your text below<p>
-<input type="text" id="usertext" style="width:90%">
-<input type="submit" id="submitbutton" value="Done" onclick="userTextSubmitted()">
+
+<div class="full-width-container" style="width:100%">
+	<input type="text" id="usertext" style="flex-grow:1">
+	<input type="submit" id="submitbutton" value="Done" onclick="userTextSubmitted()" style="width:50px">
+</div>
+
+<p id="resultText">Your result will appear here<p>
 <br>
-<p id="resulttext">Your result will appear here<p>
+<canvas id="customCanvas">Canvas tags are not supported</canvas>
+<p id="canvasText">xx</p>
 <br>
 <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
 <p id="ticker">
+<p id="animatedParagraph">Lorem ipsum dolor sit amet</p>
 
 <script type="text/javascript">
+const targetFPS = 40;
+let currentInterframeDelay = 50;
+let globalCounter = 0;
+
+let customCanvas = document.getElementById("customCanvas");
+let canvasText = document.getElementById("canvasText");
+let oldDate = Date.now();
+
 function userTextSubmitted() {
 	let userstring = document.getElementById("usertext").value;
 	if(userstring==="") {
@@ -24,10 +74,10 @@ function userTextSubmitted() {
 	}
 	let now = new Date();
 	let nowstring = now.toLocaleTimeString();
-	document.getElementById("resulttext").innerHTML = `Last input was ${userstring} at ${nowstring}`;
+	document.getElementById("resultText").innerHTML = `Last input was ${userstring} at ${nowstring}`;
 }
 
-function onTimeout() {
+function onTickerTimeout() {
 	let now = new Date();
 	let second = now.getSeconds();
 	if(second%2==0) {
@@ -36,10 +86,24 @@ function onTimeout() {
 	else {
 		document.getElementById("ticker").innerHTML = "O";
 	}
-	window.setTimeout(onTimeout, 1000-now.getMilliseconds());
+	window.setTimeout(onTickerTimeout, 1000-now.getMilliseconds());
 }
 
-window.setTimeout(onTimeout, 1000);
+function onCanvasTimeout() {
+	let currentDate = Date.now();
+	let difference = currentDate - oldDate;
+	oldDate = currentDate;
+	let fps = -1;
+	if(difference != 0) {fps = 1000/difference;}
+	if(globalCounter % (fps/10) < 1) {canvasText.innerHTML = fps.toFixed(0);}
+	if(fps > targetFPS) {currentInterframeDelay++;}
+	else {currentInterframeDelay--;}
+	globalCounter += 1;
+	window.setTimeout(onCanvasTimeout, currentInterframeDelay);
+}
+
+window.setTimeout(onTickerTimeout, 1000);
+window.setTimeout(onCanvasTimeout, 20);
 </script>
 
 </body>
