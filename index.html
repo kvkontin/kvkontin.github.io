@@ -51,7 +51,7 @@ h1 {
 
 <p id="resultText">Your result will appear here<p>
 <br>
-<canvas id="customCanvas">Canvas tags are not supported</canvas>
+<canvas id="customCanvas" width="640" height="480" style="border:1px solid">Canvas tags are not supported</canvas>
 <p id="canvasText">xx</p>
 <br>
 <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
@@ -65,6 +65,7 @@ let currentInterframeDelay = 50;
 let globalCounter = 0;
 
 let customCanvas = document.getElementById("customCanvas");
+let canvasContext = customCanvas.getContext("2d");
 let canvasText = document.getElementById("canvasText");
 let oldDate = Date.now();
 
@@ -91,6 +92,16 @@ function onTickerTimeout() {
 }
 
 function onCanvasTimeout() {
+	// painting
+	let randomCoords = [640*Math.random()-10, 480*Math.random()-10, 20*Math.random(), 20*Math.random()];
+	let randomHue = Math.floor(Math.random()*360);
+	let randomSaturation = Math.floor(Math.random()*100);
+	let randomLightness = Math.floor(Math.random()*100);
+	let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
+	canvasContext.fillStyle = randomColor;
+	canvasContext.fillRect(randomCoords[0],randomCoords[1],randomCoords[2],randomCoords[3]);
+	
+	// fps regulation
 	let currentDate = Date.now();
 	let difference = currentDate - oldDate;
 	let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
@@ -99,7 +110,7 @@ function onCanvasTimeout() {
 	if(difference != 0) {fps = 1000/difference;}
 	longtermFPS += (fps - longtermFPS) / 100;
 	if(fpsUpdatedDifference>100 && currentDate % 10 < 1) {
-		canvasText.innerHTML = fps.toFixed(0)+", "+longtermFPS;
+		canvasText.innerHTML = fps.toFixed(0)+", "+longtermFPS.toFixed(0);
 		fpsUpdatedTimestamp = currentDate;
 	}
 	if(longtermFPS > targetFPS) {currentInterframeDelay++;}
