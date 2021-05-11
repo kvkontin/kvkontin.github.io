@@ -93,13 +93,20 @@ function onTickerTimeout() {
 
 function onCanvasTimeout() {
 	// painting
-	let randomCoords = [640*Math.random()-10, 480*Math.random()-10, 20*Math.random(), 20*Math.random()];
+	let randomCoords = [640*Math.random()-10, 480*Math.random()-10, 10*Math.random()+10, 10*Math.random()+15];
+	let topMargin = randomCoords[3]*Math.random()*0.2+2;
+	let bottomMargin = randomCoords[3]*(Math.random()*0.3+0.5);
+	let leftMargin = Math.random()*randomCoords[2]*0.45;
+	let rightMargin = Math.random()*randomCoords[2]*0.45;
 	let randomHue = Math.floor(Math.random()*360);
 	let randomSaturation = Math.floor(Math.random()*100);
-	let randomLightness = Math.floor(Math.random()*100);
+	let randomLightness = Math.floor(Math.random()*60);
 	let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
 	canvasContext.fillStyle = randomColor;
 	canvasContext.fillRect(randomCoords[0],randomCoords[1],randomCoords[2],randomCoords[3]);
+	randomColor = `hsl(${randomHue},${randomSaturation-20}%,${randomLightness+40}%)`;
+	canvasContext.fillStyle = randomColor;
+	canvasContext.fillRect(randomCoords[0]+leftMargin,randomCoords[1]+topMargin,randomCoords[2]-rightMargin-leftMargin,randomCoords[3]-bottomMargin);
 	
 	// fps regulation
 	let currentDate = Date.now();
