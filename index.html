@@ -58,10 +58,10 @@ h1 {
 <p id="ticker">
 
 <script type="text/javascript">
-const targetFPS = 40;
-let longtermFPS = targetFPS;
+const targetFPS = 30;
+const targetMillisPerFrame = 1000/targetFPS;
 let fpsUpdateTimestamp = Date.now();
-let currentInterframeDelay = 50;
+let currentInterframeDelay = 20;
 let globalCounter = 0;
 
 let customCanvas = document.getElementById("customCanvas");
@@ -114,16 +114,16 @@ function onCanvasTimeout() {
 	let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
 	oldDate = currentDate;
 	let fps = -1;
-	if(difference != 0) {fps = 1000/difference;}
-	longtermFPS += (fps - longtermFPS) / 100;
+	if(difference != 0) {
+		fps = 1000/difference;
+	}
 	if(fpsUpdatedDifference>100 && currentDate % 10 < 1) {
-		canvasText.innerHTML = fps.toFixed(0)+", "+longtermFPS.toFixed(0);
+		canvasText.innerHTML = fps.toFixed(0)+", "+currentInterframeDelay.toFixed(0);
 		fpsUpdatedTimestamp = currentDate;
 	}
-	if(longtermFPS > targetFPS) {currentInterframeDelay++;}
-	else {currentInterframeDelay--;}
+	currentInterframeDelay = targetMillisPerFrame - difference;
 	globalCounter += 1;
-	window.setTimeout(onCanvasTimeout, currentInterframeDelay);
+	window.setTimeout(onCanvasTimeout, Math.max(currentInterframeDelay, 1));
 }
 
 window.setTimeout(onTickerTimeout, 1000);
