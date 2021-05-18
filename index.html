@@ -51,23 +51,10 @@ h1 {
 
 <p id="resultText">Your result will appear here<p>
 <br>
-<canvas id="customCanvas" width="640" height="480" style="border:1px solid">Canvas tags are not supported</canvas>
-<p id="canvasText">xx</p>
-<br>
 <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
 <p id="ticker">
 
 <script type="text/javascript">
-const targetFPS = 30;
-const targetMillisPerFrame = 1000/targetFPS;
-let fpsUpdateTimestamp = Date.now();
-let currentInterframeDelay = 20;
-let globalCounter = 0;
-
-let customCanvas = document.getElementById("customCanvas");
-let canvasContext = customCanvas.getContext("2d");
-let canvasText = document.getElementById("canvasText");
-let oldDate = Date.now();
 
 function userTextSubmitted() {
 	let userstring = document.getElementById("usertext").value;
@@ -91,43 +78,7 @@ function onTickerTimeout() {
 	window.setTimeout(onTickerTimeout, 1000-now.getMilliseconds());
 }
 
-function onCanvasTimeout() {
-	// painting
-	let randomCoords = [640*Math.random()-10, 480*Math.random()-10, 10*Math.random()+10, 10*Math.random()+15];
-	let topMargin = randomCoords[3]*Math.random()*0.2+2;
-	let bottomMargin = randomCoords[3]*(Math.random()*0.3+0.5);
-	let leftMargin = Math.random()*randomCoords[2]*0.45;
-	let rightMargin = Math.random()*randomCoords[2]*0.45;
-	let randomHue = Math.floor(Math.random()*360);
-	let randomSaturation = Math.floor(Math.random()*100);
-	let randomLightness = Math.floor(Math.random()*60);
-	let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
-	canvasContext.fillStyle = randomColor;
-	canvasContext.fillRect(randomCoords[0],randomCoords[1],randomCoords[2],randomCoords[3]);
-	randomColor = `hsl(${randomHue},${randomSaturation-20}%,${randomLightness+40}%)`;
-	canvasContext.fillStyle = randomColor;
-	canvasContext.fillRect(randomCoords[0]+leftMargin,randomCoords[1]+topMargin,randomCoords[2]-rightMargin-leftMargin,randomCoords[3]-bottomMargin);
-	
-	// fps regulation
-	let currentDate = Date.now();
-	let difference = currentDate - oldDate;
-	let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
-	oldDate = currentDate;
-	let fps = -1;
-	if(difference != 0) {
-		fps = 1000/difference;
-	}
-	if(fpsUpdatedDifference>100 && currentDate % 10 < 1) {
-		canvasText.innerHTML = fps.toFixed(0)+", "+currentInterframeDelay.toFixed(0);
-		fpsUpdatedTimestamp = currentDate;
-	}
-	currentInterframeDelay = targetMillisPerFrame - difference;
-	globalCounter += 1;
-	window.setTimeout(onCanvasTimeout, Math.max(currentInterframeDelay, 1));
-}
-
 window.setTimeout(onTickerTimeout, 1000);
-window.setTimeout(onCanvasTimeout, 20);
 </script>
 
 </body>
