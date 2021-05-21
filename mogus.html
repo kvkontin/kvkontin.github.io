@@ -26,9 +26,8 @@ body {
 const targetFPS = 30;
 const targetMillisPerFrame = 1000/targetFPS;
 let fpsUpdateTimestamp = Date.now();
-let currentInterframeDelay = 20;
 let globalCounter = 0;
-
+let lastFrameTimestamp = 0;
 let customCanvas = document.getElementById("customCanvas");
 let canvasContext = customCanvas.getContext("2d");
 let canvasText = document.getElementById("canvasText");
@@ -46,7 +45,16 @@ function onTickerTimeout() {
 	window.setTimeout(onTickerTimeout, 1000-now.getMilliseconds());
 }
 
-function onCanvasTimeout() {
+function onCanvasTimeout(timestamp) {
+
+	window.requestAnimationFrame(onCanvasTimeout);
+	globalCounter += 1;
+
+	// only draw anything if an interframe period has in fact passed
+	if(timestamp < lastFrameTimestamp+targetMillisPerFrame) {
+		return;
+	}
+	
 	// painting
 	let randomCoords = [640*Math.random()-10, 480*Math.random()-10, 10*Math.random()+10, 10*Math.random()+15];
 	let topMargin = randomCoords[3]*Math.random()*0.2+2;
@@ -63,7 +71,9 @@ function onCanvasTimeout() {
 	canvasContext.fillStyle = randomColor;
 	canvasContext.fillRect(randomCoords[0]+leftMargin,randomCoords[1]+topMargin,randomCoords[2]-rightMargin-leftMargin,randomCoords[3]-bottomMargin);
 	
-	// fps regulation
+	lastFrameTimestamp = lastFrameTimestamp+targetMillisPerFrame;
+
+	// fps debugging
 	let currentDate = Date.now();
 	let difference = currentDate - oldDate;
 	let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
@@ -72,17 +82,12 @@ function onCanvasTimeout() {
 	if(difference != 0) {
 		fps = 1000/difference;
 	}
-	if(fpsUpdatedDifference>100 && currentDate % 10 < 1) {
-		canvasText.innerHTML = fps.toFixed(0)+", "+currentInterframeDelay.toFixed(0);
-		fpsUpdatedTimestamp = currentDate;
-	}
-	currentInterframeDelay = targetMillisPerFrame - difference;
-	globalCounter += 1;
-	window.setTimeout(onCanvasTimeout, Math.max(currentInterframeDelay, 1));
+	canvasText.innerHTML = fps.toFixed(0);
+	fpsUpdatedTimestamp = currentDate;
 }
 
 window.setTimeout(onTickerTimeout, 1000);
-window.setTimeout(onCanvasTimeout, 20);
+window.requestAnimationFrame(onCanvasTimeout);
 </script>
 
 </body>
