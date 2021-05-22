@@ -12,17 +12,25 @@
 body {
   background-color: #002b36;
 }
+
+canvas {
+	width:100%;
+	border:1px solid;
+	image-rendering:crisp-edges;
+}
+
 </style>
 </head>
 
 <body>
-<canvas id="customCanvas" width="640" height="480" style="border:1px solid">Canvas tags are not supported</canvas>
+<canvas id="customCanvas" width="640" height="480">Canvas tags are not supported</canvas>
 <p id="canvasText">xx</p>
 <br>
 <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
 <p id="ticker">
 
 <script type="text/javascript">
+
 const targetFPS = 30;
 const targetMillisPerFrame = 1000/targetFPS;
 let fpsUpdateTimestamp = Date.now();
@@ -45,6 +53,12 @@ function onTickerTimeout() {
 	window.setTimeout(onTickerTimeout, 1000-now.getMilliseconds());
 }
 
+function randInt(min, max) {
+	min = Math.ceil(min);
+  	max = Math.floor(max);
+  	return Math.floor((max - min) * Math.random() + min); 
+}
+
 function onCanvasTimeout(timestamp) {
 
 	window.requestAnimationFrame(onCanvasTimeout);
@@ -56,15 +70,18 @@ function onCanvasTimeout(timestamp) {
 	}
 	
 	// painting
-	let randomCoords = [640*Math.random()-10, 480*Math.random()-10, 10*Math.random()+10, 10*Math.random()+15];
-	let topMargin = randomCoords[3]*Math.random()*0.2+2;
-	let bottomMargin = randomCoords[3]*(Math.random()*0.3+0.5);
-	let leftMargin = Math.random()*randomCoords[2]*0.45;
-	let rightMargin = Math.random()*randomCoords[2]*0.45;
+	let randomCoords = [randInt(-10,630), randInt(-10,470), randInt(10,20), randInt(15,25)];
+
+	let topMargin = Math.floor(randomCoords[3]*Math.random()*0.2+2);
+	let bottomMargin = Math.floor(randomCoords[3]*(Math.random()*0.3+0.5));
+	let leftMargin = Math.floor(Math.random()*randomCoords[2]*0.45);
+	let rightMargin = Math.floor(Math.random()*(randomCoords[2]-leftMargin)*0.45);
+
 	let randomHue = Math.floor(Math.random()*360);
 	let randomSaturation = Math.floor(Math.random()*100);
 	let randomLightness = Math.floor(Math.random()*60);
 	let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
+
 	canvasContext.fillStyle = randomColor;
 	canvasContext.fillRect(randomCoords[0],randomCoords[1],randomCoords[2],randomCoords[3]);
 	randomColor = `hsl(${randomHue},${randomSaturation-20}%,${randomLightness+40}%)`;
