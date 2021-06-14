@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>kvkontin</title>
+<style>
+	
+* {
+	color: white;
+	font-family: Verdana, sans-serif;
+}
+
+body {
+  background-color: #002b36;
+}
+
+.playfield {
+	width:100%;
+	height:800px;
+	position:relative;
+	border:1px solid;
+	background-color: black;
+}
+
+</style>
+</head>
+
+<body>
+<div class="playfield" id="playfield"></div>
+<p id="debugText">xx</p>
+<br>
+<img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+<p id="ticker">
+
+<script type="text/javascript">
+
+const targetFPS = 30;
+const targetMillisPerFrame = 1000/targetFPS;
+const itemCount = 50;
+
+let fpsUpdateTimestamp = Date.now();
+let globalCounter = 0;
+let lastFrameTimestamp = 0;
+let playfield = document.getElementById("playfield");
+let debugText = document.getElementById("debugText");
+let oldDate = Date.now();
+let shapeDivs = [];
+
+function randInt(min, max) {
+	min = Math.ceil(min);
+	  max = Math.floor(max);
+  	return Math.floor((max - min) * Math.random() + min); 
+}
+
+function onInit() {
+	// create animated items
+	for(let i=0; i<itemCount; i++) {
+		let randomHue = Math.floor(Math.random()*360);
+		let randomSaturation = Math.floor(Math.random()*100);
+		let randomLightness = Math.floor(Math.random()*60+10);
+		let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
+
+		let newChild = document.createElement("div");
+		newChild.innerHTML = i;
+		newChild.style.backgroundColor = randomColor;
+		newChild.style.position = "absolute";
+		newChild.style.left = randInt(0,500)+"px";
+		newChild.style.top = randInt(0,300)+"px";
+		newChild.style.width = "50px";
+		newChild.style.height = "40px";
+		playfield.appendChild(newChild);
+	}
+}
+
+function wrapPosition(x,y) {
+
+}
+
+function onTickerTimeout() {
+	let now = new Date();
+	let second = now.getSeconds();
+	if(second%2==0) {
+		document.getElementById("ticker").innerHTML = "o";
+	}
+	else {
+		document.getElementById("ticker").innerHTML = "O";
+	}
+	window.setTimeout(onTickerTimeout, 1000-now.getMilliseconds());
+}
+
+function onPlayfieldTimeout(timestamp) {
+
+	window.requestAnimationFrame(onPlayfieldTimeout);
+	globalCounter += 1;
+
+	// only draw anything if an interframe period has in fact passed
+	if(timestamp < lastFrameTimestamp+targetMillisPerFrame) {
+		return;
+	}
+	
+	// painting
+	let randomCoords = [randInt(-10,630), randInt(-10,470), randInt(10,20), randInt(15,25)];
+
+	let topMargin = Math.floor(randomCoords[3]*Math.random()*0.2+2);
+	let bottomMargin = Math.floor(randomCoords[3]*(Math.random()*0.3+0.5));
+	let leftMargin = Math.floor(Math.random()*randomCoords[2]*0.45);
+	let rightMargin = Math.floor(Math.random()*(randomCoords[2]-leftMargin)*0.45);
+
+	
+
+	// move animated items
+
+	lastFrameTimestamp = lastFrameTimestamp+targetMillisPerFrame;
+
+	// fps debugging
+	let currentDate = Date.now();
+	let difference = currentDate - oldDate;
+	let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
+	oldDate = currentDate;
+	let fps = -1;
+	if(difference != 0) {
+		fps = 1000/difference;
+	}
+	debugText.innerHTML = fps.toFixed(0);
+	fpsUpdatedTimestamp = currentDate;
+}
+
+onInit();
+window.setTimeout(onTickerTimeout, 1000);
+window.requestAnimationFrame(onPlayfieldTimeout);
+</script>
+
+</body>
+</html>
