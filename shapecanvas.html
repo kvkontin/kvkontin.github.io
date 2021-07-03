@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>kvkontin</title>
+	<style>
+		* {
+			color: white;
+			font-family: Verdana, sans-serif;
+		}
+
+		body {
+			background-color: #002b36;
+		}
+
+		.playfield {
+			width: 100%;
+			height: 100%;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid;
+			padding-bottom: 10px;
+			background-color: black;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas class="playfield" id="playfield" width=600 height=300></canvas>
+	<p id="debugText">xx</p>
+	<br>
+	<img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+	<p id="ticker"></p>
+
+	<script type="text/javascript">
+
+		const targetFPS = 30;
+		const targetMillisPerFrame = Math.floor(1000 / targetFPS);
+		const itemCount = 500;
+
+		let fpsUpdateTimestamp = Date.now();
+		let globalCounter = 0;
+		let lastFrameTimestamp = Date.now();
+		let customCanvas = document.getElementById("playfield");
+		let canvasContext = customCanvas.getContext("2d");
+		let debugText = document.getElementById("debugText");
+		let oldDate = Date.now();
+		let shapes = [];
+
+		let frameWidth = 0;
+		let frameHeight = 0;
+		let pixelsPerShortEdge = 0;
+		let boundaryMargin = 0;
+
+		function randInt(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor((max - min) * Math.random() + min);
+		}
+
+		function onInit() {
+			// calculate scaling
+			frameWidth = window.innerWidth;
+			frameHeight = window.innerHeight;
+			pixelsPerShortEdge = Math.min(frameWidth, frameHeight);
+			boundaryMargin = pixelsPerShortEdge / 15;
+			customCanvas.width = frameWidth;
+			customCanvas.height = frameHeight-30;
+			customCanvas.style.height = customCanvas.height+"px";
+
+			// create animated items
+			for (let i = 0; i < itemCount; i++) {
+
+				let newChild = {index: i};
+
+				let randomHue = Math.floor(Math.random() * 360);
+				let randomSaturation = Math.floor(Math.random() * 100);
+				let randomLightness = Math.floor(Math.random() * 60 + 10);
+				let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
+
+				newChild.x = randInt(0, frameWidth);
+				newChild.y = randInt(0, frameHeight);
+				newChild.width = pixelsPerShortEdge / 30;
+				newChild.height = pixelsPerShortEdge / 30;
+				newChild.color = randomColor;
+				
+				newChild.xSpeed = randInt(1, 5) * (randInt(0,2) == 0 ? -1 : +1);
+				newChild.ySpeed = randInt(-5, 5);
+				shapes.push(newChild);
+			}
+		}
+
+		function inBounds(x,y) {
+			return !(x<0 || y<0 || x>frameWidth || y>frameHeight);
+		}
+
+		function wrapPosition(coordinate, isHorizontal) {
+			let newCoord = coordinate;
+			const frameEdge = isHorizontal ? frameWidth : frameHeight;
+
+			if(coordinate<0-boundaryMargin) 		{return coordinate + frameEdge + 2*boundaryMargin;}
+			if(coordinate>frameEdge+boundaryMargin) {return coordinate - frameEdge - 2*boundaryMargin;}
+			return coordinate;
+		}
+
+		function onTickerTimeout() {
+			let now = new Date();
+			let second = now.getSeconds();
+			if (second % 2 == 0) {
+				document.getElementById("ticker").innerHTML = "o";
+			}
+			else {
+				document.getElementById("ticker").innerHTML = "O";
+			}
+			setTimeout(onTickerTimeout, 1000 - now.getMilliseconds());
+		}
+
+		function onPlayfieldTimeout() {
+
+			requestAnimationFrame(onPlayfieldTimeout);
+
+			// only draw anything if an interframe period has in fact passed
+			globalCounter += 1;
+			let currentDate = Date.now();
+			console.log(lastFrameTimestamp)
+			if (currentDate < lastFrameTimestamp + targetMillisPerFrame) {
+				return;
+			}
+			lastFrameTimestamp = lastFrameTimestamp + targetMillisPerFrame;
+
+			// fps debugging
+			let difference = currentDate - oldDate;
+			let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
+			oldDate = currentDate;
+			let fps = -1;
+			if (difference != 0) {
+				fps = 1000 / difference;
+			}
+			console.log(fps)
+			debugText.innerHTML = fps.toFixed(0);
+			fpsUpdatedTimestamp = currentDate;
+
+			// move and draw animated items
+			canvasContext.clearRect(0,0,frameWidth,frameHeight);
+			for (const item of shapes) {
+
+				item.x += item.xSpeed;
+				item.y += item.ySpeed;
+
+				if(!inBounds(item.x, item.y)) {
+					item.x = wrapPosition(item.x, true);
+					item.y = wrapPosition(item.y, false);
+				}
+
+				canvasContext.fillStyle = item.color;
+				canvasContext.fillRect(item.x-item.width/2, item.y-item.height/2, item.width, item.height);
+			}
+		}
+
+		onInit();
+		setTimeout(onTickerTimeout, 1000);
+		requestAnimationFrame(onPlayfieldTimeout);
+	</script>
+
+</body>
+
+</html>
