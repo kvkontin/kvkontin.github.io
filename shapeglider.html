@@ -36,7 +36,7 @@
 
 		const targetFPS = 30;
 		const targetMillisPerFrame = Math.floor(1000 / targetFPS);
-		const itemCount = 500;
+		const itemCount = 10000;
 
 		let fpsUpdateTimestamp = Date.now();
 		let globalCounter = 0;
@@ -80,15 +80,12 @@
 				newChild.style.top = randInt(0, frameHeight) + "px";
 				newChild.style.width = pixelsPerShortEdge / 30 + "px";
 				newChild.style.height = pixelsPerShortEdge / 30 + "px";
-				try {
-					newChild.xSpeed = randInt(-5, 5);
-					if (newChild.xSpeed == 0) {
-						newChild.xSpeed = 1;
-					}
-					newChild.ySpeed = randInt(-5, 5);
-				} catch (e) {
-					alert(e.message);
+
+				newChild.xSpeed = randInt(-5, 5);
+				if (newChild.xSpeed == 0) {
+					newChild.xSpeed = 1;
 				}
+				newChild.ySpeed = randInt(-5, 5);
 				playfield.appendChild(newChild);
 				shapeDivs.push(newChild);
 			}
@@ -123,12 +120,12 @@
 			requestAnimationFrame(onPlayfieldTimeout);
 
 			// only draw anything if an interframe period has in fact passed
-			globalCounter += 1;
 			let currentDate = Date.now();
 			if (currentDate < lastFrameTimestamp + targetMillisPerFrame) {
 				return;
 			}
 			lastFrameTimestamp = lastFrameTimestamp + targetMillisPerFrame;
+			globalCounter += 1;
 
 			// fps debugging
 			let difference = currentDate - oldDate;

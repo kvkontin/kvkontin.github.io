@@ -36,14 +36,14 @@
 
 		const targetFPS = 30;
 		const targetMillisPerFrame = Math.floor(1000 / targetFPS);
-		const itemCount = 500;
+		const itemCount = 10000;
 
 		let fpsUpdateTimestamp = Date.now();
 		let globalCounter = 0;
-		let lastFrameTimestamp = Date.now();
-		let customCanvas = document.getElementById("playfield");
-		let canvasContext = customCanvas.getContext("2d");
-		let debugText = document.getElementById("debugText");
+		let lastFrameTimestamp = fpsUpdateTimestamp;
+		const customCanvas = document.getElementById("playfield");
+		const canvasContext = customCanvas.getContext("2d");
+		const debugText = document.getElementById("debugText");
 		let oldDate = Date.now();
 		let shapes = [];
 
@@ -118,15 +118,14 @@
 		function onPlayfieldTimeout() {
 
 			requestAnimationFrame(onPlayfieldTimeout);
-
 			// only draw anything if an interframe period has in fact passed
-			globalCounter += 1;
 			let currentDate = Date.now();
-			console.log(lastFrameTimestamp)
+
 			if (currentDate < lastFrameTimestamp + targetMillisPerFrame) {
 				return;
 			}
 			lastFrameTimestamp = lastFrameTimestamp + targetMillisPerFrame;
+			globalCounter += 1;
 
 			// fps debugging
 			let difference = currentDate - oldDate;
@@ -136,7 +135,7 @@
 			if (difference != 0) {
 				fps = 1000 / difference;
 			}
-			console.log(fps)
+
 			debugText.innerHTML = fps.toFixed(0);
 			fpsUpdatedTimestamp = currentDate;
 
