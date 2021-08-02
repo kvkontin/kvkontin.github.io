@@ -77,21 +77,21 @@ function onInit() {
 		newChild.innerHTML = i;
 		newChild.style.backgroundColor = randomColor;
 		newChild.style.position = "absolute";
-		let newLeft = randInt(0,frameWidth);
-		let newTop = randInt(0,frameHeight);
+		newChild.style.left = randInt(0,frameWidth)+"px";
+		newChild.style.top = randInt(0,frameHeight)+"px";
 		newChild.style.width = pixelsPerShortEdge/30+"px";
 		newChild.style.height = pixelsPerShortEdge/30+"px";
-
-		let newXSpeed = randInt(-5,5);
-		if(newXSpeed == 0) {
-			newXSpeed = 1;
+		try {
+			newChild.xSpeed = randInt(-5,5);
+			if(newChild.xSpeed == 0) {
+				newChild.xSpeed = 1;
+			}
+			newChild.ySpeed = randInt(-5,5);
+		} catch(e) {
+			alert(e.message);
 		}
-		newYSpeed = randInt(-5,5);
-
 		playfield.appendChild(newChild);
 		shapeDivs.push(newChild);
-		shapeDivPositions.push([newLeft, newTop]);
-		shapeDivSpeeds.push([newXSpeed, newYSpeed]);
 	}
 }
 
@@ -143,22 +143,18 @@ function onPlayfieldTimeout() {
 	fpsUpdatedTimestamp = currentDate;
 
 	// move animated items
-	try {
-		for(let itemInd = 0; itemInd < shapeDivs.length; itemInd++) {
-			let itemPosition = shapeDivPositions[itemInd];
-			alert(itemPosition);
+	for(let item of shapeDivs) {
+		let itemPosition = [parseInt(item.style.left), parseInt(item.style.top)];
 
-			itemPosition[0] += shapeDivSpeeds[itemInd][0];
-			itemPosition[1] += shapeDivSpeeds[itemInd][1];
+		itemPosition[0] += item.xSpeed;
+		itemPosition[1] += item.ySpeed;
 
-			itemPosition[0] = wrapX(itemPosition[0]);
-			itemPosition[1] = wrapY(itemPosition[1]);
-			
-			let item = shapeDivs[itemInd];
-			item.style.left = itemPosition[0]+"px";
-			item.style.top = itemPosition[1]+"px";
-		}
-	} catch(e) {alert(e.message);}
+		itemPosition[0] = wrapX(itemPosition[0]);
+		itemPosition[1] = wrapY(itemPosition[1]);
+		
+		item.style.left = itemPosition[0]+"px";
+		item.style.top = itemPosition[1]+"px";
+	}
 }
 
 onInit();
