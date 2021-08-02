@@ -26,7 +26,7 @@
 </head>
 
 <body>
-	<div class="playfield" id="playfield"></div>
+	<canvas class="playfield" id="playfield" width=600 height=300></canvas>
 	<p id="debugText">xx</p>
 	<br>
 	<img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
@@ -40,11 +40,12 @@
 
 		let fpsUpdateTimestamp = Date.now();
 		let globalCounter = 0;
-		let lastFrameTimestamp = Date.now();
-		let playfield = document.getElementById("playfield");
-		let debugText = document.getElementById("debugText");
+		let lastFrameTimestamp = fpsUpdateTimestamp;
+		const customCanvas = document.getElementById("playfield");
+		const canvasContext = customCanvas.getContext("2d");
+		const debugText = document.getElementById("debugText");
 		let oldDate = Date.now();
-		let shapeDivs = [];
+		let shapes = [];
 
 		let frameWidth = 0;
 		let frameHeight = 0;
@@ -63,44 +64,43 @@
 			frameHeight = window.innerHeight;
 			pixelsPerShortEdge = Math.min(frameWidth, frameHeight);
 			boundaryMargin = pixelsPerShortEdge / 15;
-			document.getElementById("playfield").style.height = window.innerHeight-30+"px";
+			customCanvas.width = frameWidth;
+			customCanvas.height = frameHeight-30;
+			customCanvas.style.height = customCanvas.height+"px";
 
 			// create animated items
 			for (let i = 0; i < itemCount; i++) {
+
+				let newChild = {index: i};
+
 				let randomHue = Math.floor(Math.random() * 360);
 				let randomSaturation = Math.floor(Math.random() * 100);
 				let randomLightness = Math.floor(Math.random() * 60 + 10);
 				let randomColor = `hsl(${randomHue},${randomSaturation}%,${randomLightness}%)`;
 
-				let newChild = document.createElement("div");
-				//newChild.innerHTML = i;
-				newChild.style.backgroundColor = randomColor;
-				newChild.style.position = "absolute";
-				newChild.style.left = randInt(0, frameWidth) + "px";
-				newChild.style.top = randInt(0, frameHeight) + "px";
-				newChild.style.width = pixelsPerShortEdge / 30 + "px";
-				newChild.style.height = pixelsPerShortEdge / 30 + "px";
-
-				newChild.xSpeed = randInt(-5, 5);
-				if (newChild.xSpeed == 0) {
-					newChild.xSpeed = 1;
-				}
+				newChild.x = randInt(0, frameWidth);
+				newChild.y = randInt(0, frameHeight);
+				newChild.width = pixelsPerShortEdge / 30;
+				newChild.height = pixelsPerShortEdge / 30;
+				newChild.color = randomColor;
+				
+				newChild.xSpeed = randInt(1, 5) * (randInt(0,2) == 0 ? -1 : +1);
 				newChild.ySpeed = randInt(-5, 5);
-				playfield.appendChild(newChild);
-				shapeDivs.push(newChild);
+				shapes.push(newChild);
 			}
 		}
 
-		function wrapX(x) {
-			if (x < 0 - boundaryMargin) { x += frameWidth; }
-			if (x > frameWidth) { x -= frameWidth + boundaryMargin; }
-			return x;
+		function inBounds(x,y) {
+			return !(x<0 || y<0 || x>frameWidth || y>frameHeight);
 		}
 
-		function wrapY(y) {
-			if (y < 0 - boundaryMargin) { y += frameHeight; }
-			if (y > frameHeight) { y -= frameHeight + boundaryMargin; }
-			return y;
+		function wrapPosition(coordinate, isHorizontal) {
+			let newCoord = coordinate;
+			const frameEdge = isHorizontal ? frameWidth : frameHeight;
+
+			if(coordinate<0-boundaryMargin) 		{return coordinate + frameEdge + 2*boundaryMargin;}
+			if(coordinate>frameEdge+boundaryMargin) {return coordinate - frameEdge - 2*boundaryMargin;}
+			return coordinate;
 		}
 
 		function onTickerTimeout() {
@@ -118,9 +118,9 @@
 		function onPlayfieldTimeout() {
 
 			requestAnimationFrame(onPlayfieldTimeout);
-
 			// only draw anything if an interframe period has in fact passed
 			let currentDate = Date.now();
+
 			if (currentDate < lastFrameTimestamp + targetMillisPerFrame) {
 				return;
 			}
@@ -135,21 +135,24 @@
 			if (difference != 0) {
 				fps = 1000 / difference;
 			}
+
 			debugText.innerHTML = fps.toFixed(0);
 			fpsUpdatedTimestamp = currentDate;
 
-			// move animated items
-			for (const item of shapeDivs) {
-				let itemPosition = [parseInt(item.style.left), parseInt(item.style.top)];
+			// move and draw animated items
+			canvasContext.clearRect(0,0,frameWidth,frameHeight);
+			for (const item of shapes) {
 
-				itemPosition[0] += item.xSpeed;
-				itemPosition[1] += item.ySpeed;
+				item.x += item.xSpeed;
+				item.y += item.ySpeed;
 
-				itemPosition[0] = wrapX(itemPosition[0]);
-				itemPosition[1] = wrapY(itemPosition[1]);
+				if(!inBounds(item.x, item.y)) {
+					item.x = wrapPosition(item.x, true);
+					item.y = wrapPosition(item.y, false);
+				}
 
-				item.style.left = itemPosition[0] + "px";
-				item.style.top = itemPosition[1] + "px";
+				canvasContext.fillStyle = item.color;
+				canvasContext.fillRect(item.x-item.width/2, item.y-item.height/2, item.width, item.height);
 			}
 		}
 
