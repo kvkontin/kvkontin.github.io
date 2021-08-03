@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>kvkontin</title>
+	<style>
+		* {
+			color: white;
+			font-family: Verdana, sans-serif;
+		}
+
+		body {
+			background-color: #002b36;
+		}
+
+		.playfield {
+			width: 100%;
+			height: 100%;
+			position: relative;
+			overflow: hidden;
+			border: 1px solid;
+			padding-bottom: 10px;
+			background-color: black;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas class="playfield" id="playfield" width=600 height=300></canvas>
+	<p id="debugText">xx</p>
+	<br>
+	<img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+	<p id="ticker"></p>
+
+	<script type="text/javascript">
+
+        const pixelScale = 10;
+
+		const targetFPS = 30;
+		const targetMillisPerFrame = Math.floor(1000 / targetFPS);
+
+		let fpsUpdateTimestamp = Date.now();
+		let globalCounter = 0;
+		let lastFrameTimeDesired = fpsUpdateTimestamp;
+
+		const customCanvas = document.getElementById("playfield");
+		const canvasContext = customCanvas.getContext("2d");
+		const debugText = document.getElementById("debugText");
+		let lastFrameTimeActual = Date.now();
+
+		const frameWidth = window.innerWidth;
+		const frameHeight = window.innerHeight;
+		let pixelsPerShortEdge = Math.min(frameWidth, frameHeight);
+
+        const pixelsWidth = (frameWidth/pixelScale);
+        const pixelsHeight = (frameHeight/pixelScale);
+
+        let pixels = [];
+        let pixelContributions = [];
+        let overallFitness = 0;
+        const neighbourhoodRadius = 8;
+        let pixelsAffectedOffsets = [];
+
+
+		function randInt(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor((max - min) * Math.random() + min);
+		}
+
+        function inBounds(x,y) {
+            return !(x<0 || x>pixelsWidth || y<0 || y>pixelsHeight);
+        }
+
+        function approximateHue(red, green, blue) {
+            return 
+        }
+
+        function colourDistance(red1,green1,blue1,red2,green2,blue2) {
+            let nred1 = red1/255;
+            let ngreen1 = green1/255;
+            let nblue1 = blue1/255;
+            let nred2 = red2/255;
+            let ngreen2 = green2/255;
+            let nblue2 = blue2/255;
+            let euclidean = Math.sqrt((nred1-nred2)*(nred1-nred2)+(ngreen1-ngreen2)*(ngreen1-ngreen2)+(nblue1-nblue2)*(nblue1-nblue2));
+            let hueDistance = Math.abs((nred1/nblue1)-(nred2/nblue2));
+            //console.log("euclidean "+euclidean+", hue "+hueDistance);
+            return euclidean;
+        }
+
+        function spaceDistance(x1,y1,x2,y2) {
+            return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+        }
+
+        function linear(inValue, inFrom, inTo, outFrom, outTo) {
+            return outFrom+(inValue-inFrom)/(inTo-inFrom)*(outTo-outFrom);
+        }
+
+		function onInit() {
+			// calculate scaling
+			customCanvas.width = frameWidth;
+			customCanvas.height = frameHeight-30;
+			customCanvas.style.height = customCanvas.height+"px";
+
+            // fill pixel colour array
+            for(let x=0; x<pixelsWidth; x++) {
+                pixels.push([]);
+                for(let y=0; y<pixelsHeight; y++) {
+                    let red = randInt(0,256);
+                    let green = randInt(0,256);
+                    let blue = randInt(0,256);
+
+                    pixels[x][y] = [red, green, blue];
+                }
+            }
+            console.log("pixels filled");
+
+            try {
+            // store pixel neighbour offsets
+            for(let x=0; x<neighbourhoodRadius; x++) {
+                for(let y=0; y<neighbourhoodRadius; y++) {
+                    if(spaceDistance(0,0,x,y) > neighbourhoodRadius) {continue;}
+                    pixelsAffectedOffsets.push([x,y]);
+                    pixelsAffectedOffsets.push([x,-y]);
+                    pixelsAffectedOffsets.push([-x,y]);
+                    pixelsAffectedOffsets.push([-x,-y]);
+                }
+            }} catch(err) {console.log(err.message);}
+            console.log("offsets stored, length "+pixelsAffectedOffsets.length+" first "+pixelsAffectedOffsets[0]);
+
+            // calculate fitness
+            for(let x=0; x<pixelsWidth; x++) {
+                for(let y=0; y<pixelsHeight; y++) {
+                    overallFitness += computePixelFitness(x,y);
+                }
+            }
+            console.log("fitness computed");
+		}
+
+		function onTickerTimeout() {
+			let now = new Date();
+			let second = now.getSeconds();
+			if (second % 2 == 0) {
+				document.getElementById("ticker").innerHTML = "o";
+			}
+			else {
+				document.getElementById("ticker").innerHTML = "O";
+			}
+			setTimeout(onTickerTimeout, 1000 - now.getMilliseconds());
+		}
+
+        function computeContribution(xFrom, yFrom, xTo, yTo) {
+            let distance = spaceDistance(xFrom, yFrom, xTo, yTo);
+            let redFrom = pixels[xFrom][yFrom][0];
+            let greenFrom = pixels[xFrom][yFrom][1];
+            let blueFrom = pixels[xFrom][yFrom][2];
+            let redTo = pixels[xTo][yTo][0];
+            let greenTo = pixels[xTo][yTo][1];
+            let blueTo = pixels[xTo][yTo][2];
+            let differenceInColour = colourDistance(redFrom, redTo, greenFrom, greenTo, blueFrom, blueTo);
+
+            let currentNeighRadius = neighbourhoodRadius; //linear(xTo, 0, pixelsWidth, 6, 8);
+            let distanceFactor = distance/currentNeighRadius; // 0...1 as distance grows
+
+            let fadeOutFactor = (1-distanceFactor)*10;
+            if(fadeOutFactor<0) {fadeOutFactor = 0;}
+            if(fadeOutFactor>1) {fadeOutFactor = 1;}
+
+            if(distanceFactor > 0.75) {
+                // want them different, but taper off at edge of neighbourhood
+                return differenceInColour*fadeOutFactor;
+            }
+            else {
+                return -differenceInColour*0.6;
+            }
+            return 0;
+        }
+        
+        function computePixelFitness(x,y) {
+
+            let fitness = 0;
+            let affected = pixelsAffectedBy(x,y);
+
+            for(const aff of affected) {
+                try {
+                fitness += computeContribution(aff[0], aff[1], x, y);
+                } catch(err) {console.log(err.message);}
+            }
+            return fitness;
+        }
+
+        function pixelsAffectedBy(x,y) {
+            let results = [];
+            let counter = 0;
+            for(const coords of pixelsAffectedOffsets) {
+                if(inBounds(coords[0]+x, coords[1]+y)) {
+                    results[counter] = [];
+                    results[counter][0] = coords[0]+x;
+                    results[counter][1] = coords[1]+y;
+                    counter++;
+                }
+            }
+            return results;
+        }
+
+
+        function tryChange() {
+            // collect current data to compare the change against
+            const oldOverallFitness = overallFitness;
+
+            const x = randInt(0,pixelsWidth);
+            const y = randInt(0,pixelsHeight);
+            const n = randInt(0,3);
+
+            const oldPixelValue = pixels[x][y][n];
+            const relevants = pixelsAffectedBy(x,y);
+
+            let contributionsTo = [];
+            
+            for(const rel of relevants) {
+                // make note of how the pixel we're changing contributed to this neighbour
+                overallFitness -= computeContribution(rel[0],rel[1],x,y);
+            }
+
+            // make the change
+            pixels[x][y][n] += randInt(0,60)-30;
+            if(pixels[x][y][n] < 0) {pixels[x][y][n] = 0;}
+            else if(pixels[x][y][n] > 255) {pixels[x][y][n] = 255;}
+
+            // see the effect on pixels whose fitness depends on this one
+            for(const rel of relevants) {
+                // knowing the old contribution from our changing pixel to this neighbour,
+                // find the new contribution
+                overallFitness += computeContribution(rel[0],rel[1],x,y);
+            }
+
+            if(overallFitness < oldOverallFitness) {
+                // revert the change
+                overallFitness = oldOverallFitness;
+                pixels[x][y][n] = oldPixelValue;
+                console.log("pix updated");
+            }
+        }
+
+
+		function onPlayfieldTimeout() {
+
+			requestAnimationFrame(onPlayfieldTimeout);
+			// only draw anything if an interframe period has in fact passed
+			let currentDate = Date.now();
+
+			if (currentDate < lastFrameTimeDesired + targetMillisPerFrame) {
+				return;
+			}
+			lastFrameTimeDesired = lastFrameTimeDesired + targetMillisPerFrame;
+			globalCounter += 1;
+
+			// fps debugging
+			let difference = currentDate - lastFrameTimeActual;
+			let fpsUpdatedDifference = currentDate - fpsUpdateTimestamp;
+			lastFrameTimeActual = currentDate;
+			let fps = -1;
+			if (difference != 0) {
+				fps = 1000 / difference;
+			}
+
+			debugText.innerHTML = overallFitness+", "+fps.toFixed(0);
+			fpsUpdatedTimestamp = currentDate;
+
+            // change pixel values
+            try {
+                for(let i=0; i<1000; i++) {
+                    tryChange();
+                }
+            } catch(err) {
+                console.log("error on 197: "+err.message);
+            }
+
+			// draw screen
+			for(let x=0; x<pixelsWidth; x++) {
+                for(let y=0; y<pixelsHeight; y++) {
+                    canvasContext.fillStyle = `rgb(${pixels[x][y][0]},${pixels[x][y][1]},${pixels[x][y][2]})`;
+                    canvasContext.fillRect(x*pixelScale,y*pixelScale,pixelScale,pixelScale);
+                }
+            }
+		}
+
+		onInit();
+		setTimeout(onTickerTimeout, 1000);
+		requestAnimationFrame(onPlayfieldTimeout);
+	</script>
+
+</body>
+</html>
