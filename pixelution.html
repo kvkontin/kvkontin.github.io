@@ -52,20 +52,31 @@
 		const frameHeight = window.innerHeight;
 		let pixelsPerShortEdge = Math.min(frameWidth, frameHeight);
 
-        const pixelsWidth = (frameWidth/pixelScale);
-        const pixelsHeight = (frameHeight/pixelScale);
+        const pixelsWidth = Math.floor(frameWidth/pixelScale);
+        //console.log("pixelsWidth "+pixelsWidth);
+        const pixelsHeight = Math.floor(frameHeight/pixelScale);
 
         let pixels = [];
         let pixelContributions = [];
         let overallFitness = 0;
-        const neighbourhoodRadius = 8;
+        const neighbourhoodRadius = 5;
         let pixelsAffectedOffsets = [];
+        const chanceIgnoreOldSuccess = 0.01;
+        const chanceAcceptWorse = 0.001;
+
+        let xOld = randInt(0,pixelsWidth);
+        let yOld = randInt(0,pixelsHeight);
+        let nOld = randInt(0,3);
+        let iOld = randInt(0,60)-30;
 
 
 		function randInt(min, max) {
 			min = Math.ceil(min);
 			max = Math.floor(max);
-			return Math.floor((max - min) * Math.random() + min);
+            
+			let result = Math.floor((max - min) * Math.random() + min);
+            //console.log("returned "+result+" of "+max);
+            return result;
 		}
 
         function inBounds(x,y) {
@@ -77,15 +88,8 @@
         }
 
         function colourDistance(red1,green1,blue1,red2,green2,blue2) {
-            let nred1 = red1/255;
-            let ngreen1 = green1/255;
-            let nblue1 = blue1/255;
-            let nred2 = red2/255;
-            let ngreen2 = green2/255;
-            let nblue2 = blue2/255;
-            let euclidean = Math.sqrt((nred1-nred2)*(nred1-nred2)+(ngreen1-ngreen2)*(ngreen1-ngreen2)+(nblue1-nblue2)*(nblue1-nblue2));
-            let hueDistance = Math.abs((nred1/nblue1)-(nred2/nblue2));
-            //console.log("euclidean "+euclidean+", hue "+hueDistance);
+            let euclidean = Math.sqrt((red1-red2)*(red1-red2)+(green1-green2)*(green1-green2)+(blue1-blue2)*(blue1-blue2));
+            let manhattan = Math.abs(red1-red2)+Math.abs(green1-green2)+Math.abs(blue1-blue2);
             return euclidean;
         }
 
@@ -97,6 +101,14 @@
             return outFrom+(inValue-inFrom)/(inTo-inFrom)*(outTo-outFrom);
         }
 
+        function penalise(deficit, penaltyGrowthRate) {
+            return -Math.pow(deficit, penaltyGrowthRate);
+        }
+
+        function reward(score, rewardAttenuation) {
+            return Math.pow(score, 1/rewardAttenuation);
+        }
+
 		function onInit() {
 			// calculate scaling
 			customCanvas.width = frameWidth;
@@ -104,19 +116,16 @@
 			customCanvas.style.height = customCanvas.height+"px";
 
             // fill pixel colour array
-            for(let x=0; x<pixelsWidth; x++) {
+            for(let x=0; x<=pixelsWidth; x++) {
                 pixels.push([]);
-                for(let y=0; y<pixelsHeight; y++) {
-                    let red = randInt(0,256);
-                    let green = randInt(0,256);
-                    let blue = randInt(0,256);
-
+                for(let y=0; y<=pixelsHeight; y++) {
+                    let red = Math.random();
+                    let green = Math.random();
+                    let blue = Math.random();
                     pixels[x][y] = [red, green, blue];
                 }
             }
-            console.log("pixels filled");
 
-            try {
             // store pixel neighbour offsets
             for(let x=0; x<neighbourhoodRadius; x++) {
                 for(let y=0; y<neighbourhoodRadius; y++) {
@@ -126,8 +135,7 @@
                     pixelsAffectedOffsets.push([-x,y]);
                     pixelsAffectedOffsets.push([-x,-y]);
                 }
-            }} catch(err) {console.log(err.message);}
-            console.log("offsets stored, length "+pixelsAffectedOffsets.length+" first "+pixelsAffectedOffsets[0]);
+            }
 
             // calculate fitness
             for(let x=0; x<pixelsWidth; x++) {
@@ -135,7 +143,6 @@
                     overallFitness += computePixelFitness(x,y);
                 }
             }
-            console.log("fitness computed");
 		}
 
 		function onTickerTimeout() {
@@ -150,20 +157,35 @@
 			setTimeout(onTickerTimeout, 1000 - now.getMilliseconds());
 		}
 
-        function computeContribution(xFrom, yFrom, xTo, yTo) {
+        function computeContribution(xFrom,yFrom,xTo,yTo) {
+            return computeContributionWorms(xFrom,yFrom,xTo,yTo);
+        }
+
+        function computeContributionWorms(xFrom, yFrom, xTo, yTo) {
             let distance = spaceDistance(xFrom, yFrom, xTo, yTo);
-            let redFrom = pixels[xFrom][yFrom][0];
-            let greenFrom = pixels[xFrom][yFrom][1];
-            let blueFrom = pixels[xFrom][yFrom][2];
-            let redTo = pixels[xTo][yTo][0];
-            let greenTo = pixels[xTo][yTo][1];
-            let blueTo = pixels[xTo][yTo][2];
-            let differenceInColour = colourDistance(redFrom, redTo, greenFrom, greenTo, blueFrom, blueTo);
+
+            let newXTo = xTo;
+            let newYTo = yTo;
+            if(newXTo<0)                {newXTo += pixelsWidth-1;}
+            if(newXTo>pixelsWidth-1)    {newXTo -= pixelsWidth-1;}
+            if(newYTo<0)                {newYTo += pixelsHeight-1;}
+            if(newYTo>pixelsHeight-1)   {newYTo -= pixelsHeight-1;}
+            let to = pixels[newXTo][newYTo];
+
+            let newXFrom = xFrom;
+            let newYFrom = yFrom;
+            if(newXFrom<0)                {newXFrom += pixelsWidth-1;}
+            if(newXFrom>pixelsWidth-1)    {newXFrom -= pixelsWidth-1;}
+            if(newYFrom<0)                {newYFrom += pixelsHeight-1;}
+            if(newYFrom>pixelsHeight-1)   {newYFrom -= pixelsHeight-1;}
+            let from = pixels[newXFrom][newYFrom];
+
+            let differenceInColour = colourDistance(from[0], from[1], from[2], to[0], to[1], to[2]);
 
             let currentNeighRadius = neighbourhoodRadius; //linear(xTo, 0, pixelsWidth, 6, 8);
             let distanceFactor = distance/currentNeighRadius; // 0...1 as distance grows
 
-            let fadeOutFactor = (1-distanceFactor)*10;
+            let fadeOutFactor = (1-distanceFactor);
             if(fadeOutFactor<0) {fadeOutFactor = 0;}
             if(fadeOutFactor>1) {fadeOutFactor = 1;}
 
@@ -172,9 +194,44 @@
                 return differenceInColour*fadeOutFactor;
             }
             else {
-                return -differenceInColour*0.6;
+                return -differenceInColour*0.1;
             }
             return 0;
+        }
+
+        function computeContributionBrain(xFrom, yFrom, xTo, yTo) {
+            const extremityWeight = 1;
+            const verticalWeight = 1;
+
+            let fitness = 0;
+
+            let distance = spaceDistance(xFrom, yFrom, xTo, yTo);
+
+            let from = pixels[xFrom][yFrom];
+            let to = pixels[xTo][yTo];
+
+            let differenceInColour = colourDistance(from[0], from[1], from[2], to[0], to[1], to[2]);
+            let distanceFactor = distance/neighbourhoodRadius; // 0...1 as distance grows
+
+            let fadeOutFactor = (1-distanceFactor);
+            if(fadeOutFactor<0) {fadeOutFactor = 0;}
+            if(fadeOutFactor>1) {fadeOutFactor = 1;}
+
+            // each pixel for itself
+            if(xFrom == xTo && yFrom == yTo) {
+                // enforce extreme colours
+                //let change = colourDistance(from[0],from[1],from[2], 0.5, 0.5, 0.5);
+                
+            }
+
+            // interaction between pixels
+            else {
+                // penalise sharp edges
+                fitness += penalise(differenceInColour*fadeOutFactor, 2);
+            }
+
+            //console.log("returned with "+fitness);
+            return fitness;
         }
         
         function computePixelFitness(x,y) {
@@ -183,9 +240,7 @@
             let affected = pixelsAffectedBy(x,y);
 
             for(const aff of affected) {
-                try {
                 fitness += computeContribution(aff[0], aff[1], x, y);
-                } catch(err) {console.log(err.message);}
             }
             return fitness;
         }
@@ -194,53 +249,60 @@
             let results = [];
             let counter = 0;
             for(const coords of pixelsAffectedOffsets) {
-                if(inBounds(coords[0]+x, coords[1]+y)) {
-                    results[counter] = [];
-                    results[counter][0] = coords[0]+x;
-                    results[counter][1] = coords[1]+y;
-                    counter++;
-                }
+                let newX = coords[0]+x;
+                let newY = coords[1]+y;
+
+                results[counter] = [];
+                results[counter][0] = newX;
+                results[counter][1] = newY;
+                counter++;
             }
             return results;
         }
 
 
-        function tryChange() {
+        function tryChange(useOldChange) {
+            // decide on the change
+            if(!useOldChange) {
+                xOld = randInt(0,pixelsWidth);
+                yOld = randInt(0,pixelsHeight);
+                nOld = randInt(0,3);
+                iOld = Math.random()*0.3;
+                if(Math.random() > 0.5) {
+                    iOld = -iOld;
+                }
+            }
+
             // collect current data to compare the change against
             const oldOverallFitness = overallFitness;
-
-            const x = randInt(0,pixelsWidth);
-            const y = randInt(0,pixelsHeight);
-            const n = randInt(0,3);
-
-            const oldPixelValue = pixels[x][y][n];
-            const relevants = pixelsAffectedBy(x,y);
+            const oldPixelValue = pixels[xOld][yOld][nOld];
+            const relevants = pixelsAffectedBy(xOld,yOld);
 
             let contributionsTo = [];
             
             for(const rel of relevants) {
                 // make note of how the pixel we're changing contributed to this neighbour
-                overallFitness -= computeContribution(rel[0],rel[1],x,y);
+                overallFitness -= computeContribution(xOld,yOld,rel[0],rel[1]);
             }
 
-            // make the change
-            pixels[x][y][n] += randInt(0,60)-30;
-            if(pixels[x][y][n] < 0) {pixels[x][y][n] = 0;}
-            else if(pixels[x][y][n] > 255) {pixels[x][y][n] = 255;}
+            pixels[xOld][yOld][nOld] += iOld;
+            if(pixels[xOld][yOld][nOld] < 0) {pixels[xOld][yOld][nOld] = 0;}
+            else if(pixels[xOld][yOld][nOld] > 1) {pixels[xOld][yOld][nOld] = 1;}
 
             // see the effect on pixels whose fitness depends on this one
             for(const rel of relevants) {
                 // knowing the old contribution from our changing pixel to this neighbour,
                 // find the new contribution
-                overallFitness += computeContribution(rel[0],rel[1],x,y);
+                overallFitness += computeContribution(xOld,yOld,rel[0],rel[1]);
             }
 
-            if(overallFitness < oldOverallFitness) {
+            if(overallFitness <= oldOverallFitness && Math.random() > chanceAcceptWorse) {
                 // revert the change
                 overallFitness = oldOverallFitness;
-                pixels[x][y][n] = oldPixelValue;
-                console.log("pix updated");
+                pixels[xOld][yOld][nOld] = oldPixelValue;
+                return false;
             }
+            return true;
         }
 
 
@@ -269,18 +331,15 @@
 			fpsUpdatedTimestamp = currentDate;
 
             // change pixel values
-            try {
-                for(let i=0; i<1000; i++) {
-                    tryChange();
-                }
-            } catch(err) {
-                console.log("error on 197: "+err.message);
+            let helped = true;
+            for(let i=0; i<1000; i++) {
+                helped = tryChange(helped && randInt(0,100) <= chanceIgnoreOldSuccess);
             }
 
 			// draw screen
 			for(let x=0; x<pixelsWidth; x++) {
-                for(let y=0; y<pixelsHeight; y++) {
-                    canvasContext.fillStyle = `rgb(${pixels[x][y][0]},${pixels[x][y][1]},${pixels[x][y][2]})`;
+                for(let y=0; y<pixelsHeight+1; y++) {
+                    canvasContext.fillStyle = `rgb(${pixels[x][y][0]*255},${pixels[x][y][1]*255},${pixels[x][y][2]*255})`;
                     canvasContext.fillRect(x*pixelScale,y*pixelScale,pixelScale,pixelScale);
                 }
             }
