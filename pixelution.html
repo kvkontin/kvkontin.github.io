@@ -34,7 +34,7 @@
 
 	<script type="text/javascript">
 
-        const pixelScale = 10;
+        const pixelScale = 8;
 
 		const targetFPS = 30;
 		const targetMillisPerFrame = Math.floor(1000 / targetFPS);
@@ -49,7 +49,7 @@
 		let lastFrameTimeActual = Date.now();
 
 		const frameWidth = window.innerWidth;
-		const frameHeight = window.innerHeight;
+		const frameHeight = window.innerHeight-30; // accommodate address bar etc
 		let pixelsPerShortEdge = Math.min(frameWidth, frameHeight);
 
         const pixelsWidth = Math.floor(frameWidth/pixelScale);
@@ -59,7 +59,7 @@
         let pixels = [];
         let pixelContributions = [];
         let overallFitness = 0;
-        const neighbourhoodRadius = 5;
+        const neighbourhoodRadius = 12;
         let pixelsAffectedOffsets = [];
         const chanceIgnoreOldSuccess = 0.01;
         const chanceAcceptWorse = 0.001;
@@ -112,7 +112,7 @@
 		function onInit() {
 			// calculate scaling
 			customCanvas.width = frameWidth;
-			customCanvas.height = frameHeight-30;
+			customCanvas.height = frameHeight;
 			customCanvas.style.height = customCanvas.height+"px";
 
             // fill pixel colour array
@@ -123,6 +123,9 @@
                     let green = Math.random();
                     let blue = Math.random();
                     pixels[x][y] = [red, green, blue];
+                    if(y == pixelsHeight-1 || x == pixelsWidth-1) {
+                        pixels[x][y] = [1,1,1];
+                    }
                 }
             }
 
@@ -338,7 +341,7 @@
 
 			// draw screen
 			for(let x=0; x<pixelsWidth; x++) {
-                for(let y=0; y<pixelsHeight+1; y++) {
+                for(let y=0; y<pixelsHeight; y++) {
                     canvasContext.fillStyle = `rgb(${pixels[x][y][0]*255},${pixels[x][y][1]*255},${pixels[x][y][2]*255})`;
                     canvasContext.fillRect(x*pixelScale,y*pixelScale,pixelScale,pixelScale);
                 }
