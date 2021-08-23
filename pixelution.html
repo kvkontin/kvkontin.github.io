@@ -3,6 +3,7 @@
 
 <head>
 	<title>kvkontin</title>
+    <meta charset="utf-8">
 	<style>
 		* {
 			color: white;
@@ -34,8 +35,8 @@
 
 	<script type="text/javascript">
 
-        const pixelScale = 8;
-        const neighbourhoodRadius = 8;
+        const pixelScale = 2;
+        const neighbourhoodRadius = 15;
         const skipPixelComputationChance = 0;
 
 		const targetFPS = 30;
@@ -386,7 +387,7 @@
 		}
 
 		onInit();
-		setTimeout(onTickerTimeout, 1000);
+		setTimeout(onTickerTimeout, 100);
 		requestAnimationFrame(onPlayfieldTimeout);
 	</script>
 
