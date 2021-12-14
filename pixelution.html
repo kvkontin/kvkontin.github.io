@@ -35,10 +35,11 @@
 
 	<script type="text/javascript">
 
-        const pixelScale = 2;
-        const neighbourhoodRadius = 15;
+        const pixelScale = 10;
+        const neighbourhoodRadius = 10;
         const skipPixelComputationChance = 0;
 
+        const changesPerFrame = 1000;
 		const targetFPS = 30;
 		const targetMillisPerFrame = Math.floor(1000 / targetFPS);
 
@@ -86,7 +87,11 @@
         }
 
         function approximateHue(red, green, blue) {
-            return 
+            return 0;
+        }
+
+        function brightness(red, green, blue) {
+            return (red+green+blue)/3;
         }
 
         function colourDistance(red1,green1,blue1,red2,green2,blue2) {
@@ -133,8 +138,8 @@
             }
 
             // store pixel neighbour offsets
-            for(let x=0; x<neighbourhoodRadius; x++) {
-                for(let y=0; y<neighbourhoodRadius; y++) {
+            for(let x=0; x<neighbourhoodRadius+1; x++) {
+                for(let y=0; y<neighbourhoodRadius+1; y++) {
                     if(spaceDistance(0,0,x,y) > neighbourhoodRadius) {continue;}
                     pixelsAffectedOffsets.push([x,y]);
                     pixelsAffectedOffsets.push([x,-y]);
@@ -255,7 +260,7 @@
             let differenceInColour = colourDistance(from[0], from[1], from[2], to[0], to[1], to[2]);
             let distanceFactor = distance/neighbourhoodRadius; // 0...1 as distance grows
 
-            let differenceDesire = rewardPositivePenaliseNegative(distanceFactor-linear(xTo, 0, pixelsWidth, 0, 1));
+            let differenceDesire = rewardPositivePenaliseNegative(distanceFactor-linear(xTo, 0, pixelsWidth, 0.33, 0.66));
 
             // each pixel for itself
             if(xFrom == xTo && yFrom == yTo) {
@@ -272,8 +277,64 @@
             //console.log("returned with "+fitness);
             return fitness;
         }
-        
+
+        function computeContributionTendrils(xFrom, yFrom, xTo, yTo) {
+            let fitness = 0;
+
+            let distance = spaceDistance(xFrom, yFrom, xTo, yTo);
+            let fromCentre = spaceDistance(xTo, yTo, pixelsWidth/2, pixelsHeight/2);
+            let tendrilThickness = fromCentre/(pixelsPerShortEdge/2);
+
+            let newXTo = xTo;
+            let newYTo = yTo;
+            if(newXTo<0)                {newXTo += pixelsWidth-1;}
+            if(newXTo>pixelsWidth-1)    {newXTo -= pixelsWidth-1;}
+            if(newYTo<0)                {newYTo += pixelsHeight-1;}
+            if(newYTo>pixelsHeight-1)   {newYTo -= pixelsHeight-1;}
+            let to = pixels[newXTo][newYTo];
+
+            let newXFrom = xFrom;
+            let newYFrom = yFrom;
+            if(newXFrom<0)                {newXFrom += pixelsWidth-1;}
+            if(newXFrom>pixelsWidth-1)    {newXFrom -= pixelsWidth-1;}
+            if(newYFrom<0)                {newYFrom += pixelsHeight-1;}
+            if(newYFrom>pixelsHeight-1)   {newYFrom -= pixelsHeight-1;}
+            let from = pixels[newXFrom][newYFrom];
+
+            let fromBrightness = (from[0]+from[1]+from[2])/3;
+            let toBrightness = (to[0]+to[1]+to[2])/3;
+            let differenceInColour = Math.abs(fromBrightness-toBrightness);
+            let distanceFactor = distance/neighbourhoodRadius; // 0...1 as distance grows
+
+            // each pixel for itself, strive to be greyscale
+            if(xFrom == xTo && yFrom == yTo) {
+                let rChange = (from[0]-from[1])*(from[0]-from[1]);
+                let gChange = (from[1]-from[2])*(from[1]-from[2]);
+                fitness += penalise(rChange+gChange, 2);
+            }
+
+            // interaction between pixels
+            else {
+                // encourage smooth differences
+
+                // computeContribution is not enough, need a new style of fitness function:
+                // one that works for one target pixel at a time, containing a loop for source pixels,
+                // and the operation done to combine these is different from a sum
+
+                let penaliseWhenPositive = distanceFactor*2-1;
+                let influenceFactor = Math.min(1, (1-distanceFactor)*10);
+                fitness += influenceFactor*penaliseWhenPositive*differenceInColour/distance;
+            }
+
+            //console.log("returned with "+fitness);
+            return fitness;
+        }
+
         function computePixelFitness(x,y) {
+            return computePixelFitnessTendrils(x,y);
+        }
+        
+        function computePixelFitnessSum(x,y) {
 
             let fitness = 0;
             let affected = pixelsAffectedBy(x,y);
@@ -282,6 +343,31 @@
                 fitness += computeContribution(aff[0], aff[1], x, y);
             }
             return fitness;
+        }
+
+        function computePixelFitnessTendrils(x,y) {
+            let fitness = 0;
+            let affected = pixelsAffectedBy(x,y);
+            let centre = pixels[x][y];
+
+            let centreBrightness = brightness(centre[0],centre[1],centre[2]);
+            let sumOfBrightnesses = centreBrightness;
+
+            for(const aff of affected) {
+                if(!inBounds(aff[0],aff[1])) {
+                    return 0;
+                }
+                let neighbour = pixels[aff[0]][aff[1]];
+                let neighbourBrightness = brightness(neighbour[0],neighbour[1],neighbour[2]);
+                sumOfBrightnesses += neighbourBrightness;
+
+                let diffInBrightnesses = Math.abs(centreBrightness-neighbourBrightness);
+            }
+
+            let averageBrightness = sumOfBrightnesses/(1+affected.length);
+            let fromMiddle = spaceDistance(x, y, pixelsWidth/2, pixelsHeight/2)/(pixelsPerShortEdge/2);
+            let desiredAverage = 1-fromMiddle;
+            return -Math.abs(averageBrightness-desiredAverage);
         }
 
         function pixelsAffectedBy(x,y) {
@@ -297,6 +383,50 @@
                 counter++;
             }
             return results;
+        }
+
+        function tryChangeNaive(useOldChange) {
+            // decide on the change
+            if(!useOldChange) {
+                xOld = randInt(0,pixelsWidth);
+                yOld = randInt(0,pixelsHeight);
+                nOld = randInt(0,3);
+                iOld = Math.random()*0.3;
+                if(Math.random() > 0.5) {
+                    iOld = -iOld;
+                }
+            }
+
+            // collect current data to compare the change against
+            const oldOverallFitness = overallFitness;
+            const oldPixelValue = pixels[xOld][yOld][nOld];
+            const relevants = pixelsAffectedBy(xOld,yOld);
+            
+            for(const rel of relevants) {
+                if(Math.random() < skipPixelComputationChance) {continue;}
+                // make note of how the pixel we're changing contributed to this neighbour
+                overallFitness -= computeContribution(xOld,yOld,rel[0],rel[1]);
+            }
+
+            pixels[xOld][yOld][nOld] += iOld;
+            if(pixels[xOld][yOld][nOld] < 0) {pixels[xOld][yOld][nOld] = 0;}
+            else if(pixels[xOld][yOld][nOld] > 1) {pixels[xOld][yOld][nOld] = 1;}
+
+            // see the effect on pixels whose fitness depends on this one
+            for(const rel of relevants) {
+                if(Math.random() < skipPixelComputationChance) {continue;}
+                // knowing the old contribution from our changing pixel to this neighbour,
+                // find the new contribution
+                overallFitness += computeContribution(xOld,yOld,rel[0],rel[1]);
+            }
+
+            if(overallFitness <= oldOverallFitness && Math.random() > chanceAcceptWorse) {
+                // revert the change
+                overallFitness = oldOverallFitness;
+                pixels[xOld][yOld][nOld] = oldPixelValue;
+                return false;
+            }
+            return true;
         }
 
 
@@ -368,12 +498,12 @@
 				fps = 1000 / difference;
 			}
 
-			debugText.innerHTML = overallFitness+", "+fps.toFixed(0);
+			debugText.innerHTML = "Fitness: "+overallFitness.toFixed(0)+", FPS: "+fps.toFixed(0);
 			fpsUpdatedTimestamp = currentDate;
 
             // change pixel values
             let helped = true;
-            for(let i=0; i<1000; i++) {
+            for(let i=0; i<changesPerFrame; i++) {
                 helped = tryChange(helped && randInt(0,100) <= chanceIgnoreOldSuccess);
             }
 
