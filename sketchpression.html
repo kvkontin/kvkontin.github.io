@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>kvkontin</title>
+        <title>sketchpression - kvkontin</title>
         <meta charset="utf-8">
         <style>
             
@@ -13,9 +13,7 @@
             }
 
             canvas {
-                /*width:100%;*/
                 border:1px solid;
-                image-rendering:crisp-edges;
             }
 
             .text {
@@ -40,20 +38,17 @@
 
         <script type="text/javascript">
 
-            console.log(math.evaluate("2*pi"));
-            console.log("that was math");
-
             const customCanvas = document.getElementById("customCanvas");
             const canvasContext = customCanvas.getContext("2d");
             const canvasText = document.getElementById("canvasText");
             const expressionField = document.getElementById("expression");
             const styleCheckbox = document.getElementById("style");
     
+            const mipmapLevels = [32, 8, 4, 1];
             let onlySign = false;
             let expression = "1";
-            let mipmapLevels = [32, 8, 1];
             let mipmapIndex = 0;
-
+            let mipmapX = 0
 
             function calculateSpot(horizontal, vertical) {
                 let scope = {
@@ -65,40 +60,45 @@
 
             function drawMipmapped() {
                 blockSize = mipmapLevels[mipmapIndex];
-                console.log("mipmapping at",blockSize);
-                for(let x = 0; x < customCanvas.width+blockSize; x+=blockSize) {
-                    for(let y = 0; y < customCanvas.height+blockSize; y+=blockSize) {
-                        let xFrac = 2*x/customCanvas.width-1;
-                        let yFrac = -2*y/customCanvas.height+1;
-                        let lightness = calculateSpot(xFrac, yFrac);
-                        if(onlySign) {
-                            lightness = (lightness >= 0);
-                        }
-                        let byte = lightness*255;
-                        canvasContext.fillStyle = `rgb(${byte},${byte},${byte})`;
-                        if(blockSize > 1) {
-                            canvasContext.fillRect(x-blockSize/2,y-blockSize/2,blockSize,blockSize);
-                        }
-                        else {
-                            canvasContext.fillRect(x,y,1,1);
-                        }
+                canvasText.innerHTML = "Drawing at scale "+blockSize;
+
+                for(let mipmapY = 0; mipmapY < customCanvas.height+blockSize; mipmapY+=blockSize) {
+                    let xFrac = 2*mipmapX/customCanvas.width-1;
+                    let yFrac = -2*mipmapY/customCanvas.height+1;
+                    let lightness = calculateSpot(xFrac, yFrac);
+                    if(onlySign) {
+                        lightness = (lightness >= 0);
+                    }
+                    let byte = lightness*255;
+                    canvasContext.fillStyle = `rgb(${byte},${byte},${byte})`;
+                    if(blockSize > 1) {
+                        canvasContext.fillRect(mipmapX-blockSize/2,mipmapY-blockSize/2,blockSize,blockSize);
+                    }
+                    else {
+                        canvasContext.fillRect(mipmapX,mipmapY,1,1);
                     }
                 }
-                if(mipmapIndex < mipmapLevels.length-1) {
-                    mipmapIndex += 1;
-                    setTimeout(drawMipmapped, 0);
+
+                mipmapX += blockSize;
+
+                if(mipmapX >= customCanvas.width + blockSize) {
+                    if(mipmapIndex >= mipmapLevels.length-1) {
+                        canvasText.innerText = "Finished";
+                        return;
+                    }
+                    else {
+                        mipmapIndex += 1;
+                        mipmapX = 0;
+                    }
                 }
-                else {
-                    canvasText.innerText = "Finished";
-                }
+                setTimeout(drawMipmapped, 0);
             }
 
             function drawFull() {
                 expression = expressionField.value;
                 onlySign = styleCheckbox.checked;
-                canvasText.innerText = "Drawing";
-                console.log("Got ", expression);
                 mipmapIndex = 0;
+                mipmapX = 0;
                 drawMipmapped();
             }
         </script>
