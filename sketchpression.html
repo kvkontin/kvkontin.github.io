@@ -27,14 +27,18 @@
     <body>
         <canvas id="customCanvas" width="640" height="640">Canvas tags are not supported</canvas>
         <p id="canvasText">Waiting</p>
+        <input id="resolution" type="range" min="1" max="32" value="1" step="1">
+        <label for="resolution">Block size</label>
+        <br>
         <input id="style" type="checkbox">
         <label for="style">Only sign</label>
         <br>
-        <input id="expression" class="text" type="text" value="x+sin(y)">
+        <input id="expression" class="text" type="text" value="x^2+y^2">
         <br>
         <input id="draw" type="button" value="Draw" onclick="drawFull()">
         <p></p>
         <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+        
 
         <script type="text/javascript">
 
@@ -43,63 +47,51 @@
             const canvasText = document.getElementById("canvasText");
             const expressionField = document.getElementById("expression");
             const styleCheckbox = document.getElementById("style");
+            const resolutionSlider = document.getElementById("resolution");
     
-            const mipmapLevels = [32, 8, 4, 1];
             let onlySign = false;
             let expression = "1";
-            let mipmapIndex = 0;
-            let mipmapX = 0
+            let blockSize = 1;
+            let code = "";
 
             function calculateSpot(horizontal, vertical) {
                 let scope = {
                     x: horizontal,
                     y: vertical
                 }
-                return math.evaluate(expression, scope);
+                return code.evaluate(scope);
             }
 
-            function drawMipmapped() {
-                blockSize = mipmapLevels[mipmapIndex];
-                canvasText.innerHTML = "Drawing at scale "+blockSize;
-
-                for(let mipmapY = 0; mipmapY < customCanvas.height+blockSize; mipmapY+=blockSize) {
-                    let xFrac = 2*mipmapX/customCanvas.width-1;
-                    let yFrac = -2*mipmapY/customCanvas.height+1;
-                    let lightness = calculateSpot(xFrac, yFrac);
-                    if(onlySign) {
-                        lightness = (lightness >= 0);
-                    }
-                    let byte = lightness*255;
-                    canvasContext.fillStyle = `rgb(${byte},${byte},${byte})`;
-                    if(blockSize > 1) {
-                        canvasContext.fillRect(mipmapX-blockSize/2,mipmapY-blockSize/2,blockSize,blockSize);
-                    }
-                    else {
-                        canvasContext.fillRect(mipmapX,mipmapY,1,1);
-                    }
-                }
-
-                mipmapX += blockSize;
-
-                if(mipmapX >= customCanvas.width + blockSize) {
-                    if(mipmapIndex >= mipmapLevels.length-1) {
-                        canvasText.innerText = "Finished";
-                        return;
-                    }
-                    else {
-                        mipmapIndex += 1;
-                        mipmapX = 0;
+            function drawBlocks() {
+                for(let x = 0; x < customCanvas.width+blockSize; x+=blockSize) {
+                    for(let y = 0; y < customCanvas.height+blockSize; y+=blockSize) {
+                        let xFrac = 2*x/customCanvas.width-1;
+                        let yFrac = -2*y/customCanvas.height+1;
+                        let lightness = calculateSpot(xFrac, yFrac);
+                        if(onlySign) {
+                            lightness = (lightness >= 0);
+                        }
+                        let byte = lightness*255;
+                        canvasContext.fillStyle = `rgb(${byte},${byte},${byte})`;
+                        if(blockSize > 1) {
+                            canvasContext.fillRect(x-blockSize/2,y-blockSize/2,blockSize,blockSize);
+                        }
+                        else {
+                            canvasContext.fillRect(x,y,1,1);
+                        }
                     }
                 }
-                setTimeout(drawMipmapped, 0);
+                canvasText.innerHTML = "Finished";
             }
 
             function drawFull() {
                 expression = expressionField.value;
+                let nodes = math.parse(expression);
+                code = nodes.compile();
                 onlySign = styleCheckbox.checked;
-                mipmapIndex = 0;
-                mipmapX = 0;
-                drawMipmapped();
+                blockSize = Number(resolutionSlider.value);
+                canvasText.innerHTML = "Drawing";
+                setTimeout(drawBlocks);
             }
         </script>
 
