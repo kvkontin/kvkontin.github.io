@@ -32,6 +32,8 @@
         <br>
         <input id="style" type="checkbox">
         <label for="style">Only sign</label>
+        <input id="gamma" type="checkbox">
+        <label for="gamma">Gamma correction</label>
         <br>
         <input id="expression" class="text" type="text" value="x^2+y^2">
         <br>
@@ -48,8 +50,10 @@
             const expressionField = document.getElementById("expression");
             const styleCheckbox = document.getElementById("style");
             const resolutionSlider = document.getElementById("resolution");
+            const gammaCheckbox = document.getElementById("gamma");
     
             let onlySign = false;
+            let gamma = false;
             let expression = "1";
             let blockSize = 1;
             let code = "";
@@ -79,6 +83,10 @@
                         if(onlySign) {
                             lightness = (lightness >= 0);
                         }
+                        lightness = math.max(math.min(lightness, 1), 0);
+                        if(gamma) {
+                            lightness *= lightness;
+                        }
                         let byte = lightness*255;
                         canvasContext.fillStyle = `rgb(${byte},${byte},${byte})`;
                         if(blockSize > 1) {
@@ -105,6 +113,7 @@
                     return;
                 }
                 onlySign = styleCheckbox.checked;
+                gamma = gammaCheckbox.checked;
                 blockSize = Number(resolutionSlider.value);
                 canvasText.innerHTML = "Drawing";
                 setTimeout(drawBlocks);
