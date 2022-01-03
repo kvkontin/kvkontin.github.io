@@ -63,6 +63,9 @@
                     return code.evaluate(scope);
                 }
                 catch(error) {
+                    if(error.message.startsWith("Undefined symbol")) {
+                        canvasText.innerHTML = error.message;
+                    }
                     return 0;
                 }
             }
@@ -86,7 +89,9 @@
                         }
                     }
                 }
-                canvasText.innerHTML = "Finished";
+                if(canvasText.innerHTML == "Drawing") {
+                    canvasText.innerHTML = "Finished";
+                }
             }
 
             function drawFull() {
