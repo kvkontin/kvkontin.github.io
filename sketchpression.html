@@ -38,7 +38,7 @@
         <input id="draw" type="button" value="Draw" onclick="drawFull()">
         <p></p>
         <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
-        
+
 
         <script type="text/javascript">
 
@@ -59,7 +59,12 @@
                     x: horizontal,
                     y: vertical
                 }
-                return code.evaluate(scope);
+                try {
+                    return code.evaluate(scope);
+                }
+                catch(error) {
+                    return 0;
+                }
             }
 
             function drawBlocks() {
@@ -86,8 +91,14 @@
 
             function drawFull() {
                 expression = expressionField.value;
-                let nodes = math.parse(expression);
-                code = nodes.compile();
+                try {
+                    let nodes = math.parse(expression);
+                    code = nodes.compile();
+                }
+                catch(error) {
+                    canvasText.innerHTML = error.message;
+                    return;
+                }
                 onlySign = styleCheckbox.checked;
                 blockSize = Number(resolutionSlider.value);
                 canvasText.innerHTML = "Drawing";
