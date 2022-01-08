@@ -27,8 +27,8 @@
     <body>
         <canvas id="customCanvas" width="640" height="640">Canvas tags are not supported</canvas>
         <p id="canvasText">Waiting</p>
-        <input id="resolution" type="range" min="1" max="32" value="1" step="1">
-        <label for="resolution">Block size</label>
+        <input id="resolution" type="range">
+        <label for="resolution">Quality</label>
         <br>
         <input id="style" type="checkbox">
         <label for="style">Only sign</label>
@@ -46,21 +46,44 @@
 
         <script type="text/javascript">
 
-            const customCanvas = document.getElementById("customCanvas");
-            const canvasContext = customCanvas.getContext("2d");
-            const canvasText = document.getElementById("canvasText");
-            const expressionField = document.getElementById("expression");
-            const styleCheckbox = document.getElementById("style");
-            const resolutionSlider = document.getElementById("resolution");
-            const gammaCheckbox = document.getElementById("gamma");
-            const negativesCheckbox = document.getElementById("negatives");
-    
+            const CUSTOM_CANVAS = document.getElementById("customCanvas");
+            const CANVAS_CONTEXT = CUSTOM_CANVAS.getContext("2d");
+            const CANVAS_TEXT = document.getElementById("canvasText");
+            const EXPRESSION_FIELD = document.getElementById("expression");
+            const STYLE_CHECKBOX = document.getElementById("style");
+            const RESOLUTION_SLIDER = document.getElementById("resolution");
+            const GAMMA_CHECKBOX = document.getElementById("gamma");
+            const NEGATIVES_CHECKBOX = document.getElementById("negatives");
+
+            const MIN_QUALITY = 0;
+            const MAX_QUALITY = 10;
+            const DEFAULT_QUALITY = 8;
+            const QUALITY_STEP = 1;
+            const MIN_BLOCK_SIZE = 1;
+            const MAX_BLOCK_SIZE = 31;
+            const BLOCK_SIZE_STEP = 2;
+
             let onlySign = false;
             let gamma = false;
             let negatives = false;
             let expression = "1";
             let blockSize = 1;
             let code = "";
+
+            RESOLUTION_SLIDER.max = MAX_QUALITY;
+            RESOLUTION_SLIDER.step = QUALITY_STEP;
+            RESOLUTION_SLIDER.value = DEFAULT_QUALITY;
+
+            function getBlockSize(quality) {
+                let qualityFraction = (quality-MIN_QUALITY)/(MAX_QUALITY-MIN_QUALITY);
+                // always allow block size 1
+                if(qualityFraction == 1) {
+                    return 1;
+                }
+                let rawBlockSize = MIN_BLOCK_SIZE + (1-qualityFraction)*(MAX_BLOCK_SIZE-MIN_BLOCK_SIZE);
+                let roundedBlockSize = BLOCK_SIZE_STEP*math.round(rawBlockSize/BLOCK_SIZE_STEP);
+                return roundedBlockSize;
+            }
 
             function calculateSpot(horizontal, vertical) {
                 let scope = {
@@ -72,17 +95,17 @@
                 }
                 catch(error) {
                     if(error.message.startsWith("Undefined symbol")) {
-                        canvasText.innerHTML = error.message;
+                        CANVAS_TEXT.innerHTML = error.message;
                     }
                     return 0;
                 }
             }
 
             function drawBlocks() {
-                for(let x = 0; x < customCanvas.width+blockSize; x+=blockSize) {
-                    for(let y = 0; y < customCanvas.height+blockSize; y+=blockSize) {
-                        let xFrac = 2*x/customCanvas.width-1;
-                        let yFrac = -2*y/customCanvas.height+1;
+                for(let x = 0; x < CUSTOM_CANVAS.width+blockSize; x+=blockSize) {
+                    for(let y = 0; y < CUSTOM_CANVAS.height+blockSize; y+=blockSize) {
+                        let xFrac = 2*x/CUSTOM_CANVAS.width-1;
+                        let yFrac = -2*y/CUSTOM_CANVAS.height+1;
                         let lightness = calculateSpot(xFrac, yFrac);
                         if(onlySign) {
                             lightness = (lightness >= 0);
@@ -94,35 +117,35 @@
                             lightness *= lightness;
                         }
                         let byte = lightness*255;
-                        canvasContext.fillStyle = `rgb(${byte},${byte},${byte})`;
+                        CANVAS_CONTEXT.fillStyle = `rgb(${byte},${byte},${byte})`;
                         if(blockSize > 1) {
-                            canvasContext.fillRect(x-blockSize/2,y-blockSize/2,blockSize,blockSize);
+                            CANVAS_CONTEXT.fillRect(x-blockSize/2,y-blockSize/2,blockSize,blockSize);
                         }
                         else {
-                            canvasContext.fillRect(x,y,1,1);
+                            CANVAS_CONTEXT.fillRect(x,y,1,1);
                         }
                     }
                 }
-                if(canvasText.innerHTML == "Drawing") {
-                    canvasText.innerHTML = "Finished";
+                if(CANVAS_TEXT.innerHTML == "Drawing") {
+                    CANVAS_TEXT.innerHTML = "Finished";
                 }
             }
 
             function drawFull() {
-                expression = expressionField.value;
+                expression = EXPRESSION_FIELD.value;
                 try {
                     let nodes = math.parse(expression);
                     code = nodes.compile();
                 }
                 catch(error) {
-                    canvasText.innerHTML = error.message;
+                    CANVAS_TEXT.innerHTML = error.message;
                     return;
                 }
-                onlySign = styleCheckbox.checked;
-                gamma = gammaCheckbox.checked;
-                negatives = negativesCheckbox.checked;
-                blockSize = Number(resolutionSlider.value);
-                canvasText.innerHTML = "Drawing";
+                onlySign = STYLE_CHECKBOX.checked;
+                gamma = GAMMA_CHECKBOX.checked;
+                negatives = NEGATIVES_CHECKBOX.checked;
+                blockSize = getBlockSize(Number(RESOLUTION_SLIDER.value));
+                CANVAS_TEXT.innerHTML = "Drawing";
                 setTimeout(drawBlocks);
             }
         </script>
