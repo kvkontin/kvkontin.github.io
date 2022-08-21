@@ -96,7 +96,8 @@
                     y: vertical
                 }
                 try {
-                    return code.evaluate(scope);
+                    let result = code.evaluate(scope);
+                    return typeof result === "number" ? result : 0;
                 }
                 catch(error) {
                     if(error.message.startsWith("Undefined symbol")) {
@@ -112,6 +113,7 @@
                         let xFrac = 2*x/CUSTOM_CANVAS.width-1;
                         let yFrac = -2*y/CUSTOM_CANVAS.height+1;
                         let lightness = calculateSpot(xFrac, yFrac);
+
                         if(onlySign) {
                             lightness = (lightness >= 0);
                         } else if(negatives) {
@@ -122,6 +124,7 @@
                             lightness *= lightness;
                         }
                         let byte = lightness*255;
+
                         CANVAS_CONTEXT.fillStyle = `rgb(${byte},${byte},${byte})`;
                         if(blockSize > 1) {
                             CANVAS_CONTEXT.fillRect(x-blockSize/2,y-blockSize/2,blockSize,blockSize);
