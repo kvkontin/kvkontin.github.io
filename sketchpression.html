@@ -15,10 +15,28 @@
             canvas {
                 border:1px solid;
                 background-color: white;
+                float: left;
+                margin: 10px;
             }
 
-            .text {
+            #expression {
+                margin-top: 20px;
+                color: black;
+                width:inherit;
+                background-color: white;
+            }
+
+            #controls {
                 width: 640px;
+                margin: 10px;
+                float: left;
+            }
+
+            #draw {
+                display: block;
+                margin-top: 20px;
+                margin-left: auto;
+                margin-right: auto;
             }
 
         </style>
@@ -27,22 +45,22 @@
 
     <body>
         <canvas id="customCanvas" width="640" height="640">Canvas tags are not supported</canvas>
-        <p id="canvasText">Waiting</p>
-        <input id="resolution" type="range">
-        <label for="resolution">Quality</label>
-        <br>
-        <input id="style" type="checkbox">
-        <label for="style">Only sign</label>
-        <input id="gamma" type="checkbox">
-        <label for="gamma">Gamma correction</label>
-        <input id="negatives" type="checkbox">
-        <label for="negatives">Zero as grey</label>
-        <br>
-        <input id="expression" class="text" type="text" value="x^2+y^2">
-        <br>
-        <input id="draw" type="button" value="Draw" onclick="drawFull()">
-        <p></p>
-        <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+        <div id="controls">
+            <div id="canvasText">Waiting</div>
+            <input id="resolution" type="range">
+            <label for="resolution">Quality</label>
+            <br>
+            <input id="style" type="checkbox">
+            <label for="style">Only sign</label>
+            <input id="gamma" type="checkbox">
+            <label for="gamma">Gamma correction</label>
+            <input id="negatives" type="checkbox">
+            <label for="negatives">Zero as grey</label>
+            <input id="expression" type="text" value="x^2+y^2">
+            <input id="draw" type="button" value="Draw" onclick="drawFull()">
+            <p></p>
+            <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
+        </div>
 
 
         <script type="text/javascript">
