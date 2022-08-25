@@ -50,14 +50,14 @@
             <input id="resolution" type="range">
             <label for="resolution">Quality</label>
             <br>
-            <input id="style" type="checkbox">
-            <label for="style">Only sign</label>
+            <input id="onlySign" type="checkbox">
+            <label for="onlySign">Only sign</label>
             <input id="gamma" type="checkbox">
             <label for="gamma">Gamma correction</label>
             <input id="negatives" type="checkbox">
             <label for="negatives">Zero as grey</label>
             <input id="expression" type="text" value="x^2+y^2">
-            <input id="draw" type="button" value="Draw" onclick="drawFull()">
+            <input id="draw" type="button" value="Draw">
             <p></p>
             <img src="https://i.imgur.com/HOOCESq.png" width="100" height="100" alt="kvkontin">
         </div>
@@ -69,7 +69,8 @@
             const CANVAS_CONTEXT = CUSTOM_CANVAS.getContext("2d");
             const CANVAS_TEXT = document.getElementById("canvasText");
             const EXPRESSION_FIELD = document.getElementById("expression");
-            const STYLE_CHECKBOX = document.getElementById("style");
+            const DRAW_BUTTON = document.getElementById("draw");
+            const ONLY_SIGN_CHECKBOX = document.getElementById("onlySign");
             const RESOLUTION_SLIDER = document.getElementById("resolution");
             const GAMMA_CHECKBOX = document.getElementById("gamma");
             const NEGATIVES_CHECKBOX = document.getElementById("negatives");
@@ -93,9 +94,18 @@
             RESOLUTION_SLIDER.step = QUALITY_STEP;
             RESOLUTION_SLIDER.value = DEFAULT_QUALITY;
 
+            DRAW_BUTTON.addEventListener("click", drawFull);
+            ONLY_SIGN_CHECKBOX.addEventListener("change", checkboxChanged);
+
             CANVAS_CONTEXT.font = "36px sans-serif";
             CANVAS_CONTEXT.textAlign = "center";
             CANVAS_CONTEXT.fillText("Press Draw", CUSTOM_CANVAS.width/2, CUSTOM_CANVAS.height/2);
+
+
+            function checkboxChanged(event) {
+                GAMMA_CHECKBOX.disabled = ONLY_SIGN_CHECKBOX.checked;
+                NEGATIVES_CHECKBOX.disabled = ONLY_SIGN_CHECKBOX.checked;
+            }
 
             function getBlockSize(quality) {
                 let qualityFraction = (quality-MIN_QUALITY)/(MAX_QUALITY-MIN_QUALITY);
@@ -167,7 +177,7 @@
                     CANVAS_TEXT.innerHTML = error.message;
                     return;
                 }
-                onlySign = STYLE_CHECKBOX.checked;
+                onlySign = ONLY_SIGN_CHECKBOX.checked;
                 gamma = GAMMA_CHECKBOX.checked;
                 negatives = NEGATIVES_CHECKBOX.checked;
                 blockSize = getBlockSize(Number(RESOLUTION_SLIDER.value));
