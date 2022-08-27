@@ -82,19 +82,21 @@
             const MIN_BLOCK_SIZE = 1;
             const MAX_BLOCK_SIZE = 31;
             const BLOCK_SIZE_STEP = 2;
+            const RENDERING_BLOCKING_DURATION = 100;
+            const DOM_UPDATE_WAIT_DURATION = 50;
 
             let onlySign = false;
             let gamma = false;
             let negatives = false;
             let expression = "1";
             let blockSize = 1;
-            let code = "";
+            let compiledMath = "";
 
             RESOLUTION_SLIDER.max = MAX_QUALITY;
             RESOLUTION_SLIDER.step = QUALITY_STEP;
             RESOLUTION_SLIDER.value = DEFAULT_QUALITY;
 
-            DRAW_BUTTON.addEventListener("click", drawFull);
+            DRAW_BUTTON.addEventListener("click", parseAndDraw);
             ONLY_SIGN_CHECKBOX.addEventListener("change", checkboxChanged);
 
             CANVAS_CONTEXT.font = "36px sans-serif";
@@ -124,7 +126,7 @@
                     y: vertical
                 }
                 try {
-                    let result = code.evaluate(scope);
+                    let result = compiledMath.evaluate(scope);
                     return typeof result === "number" ? result : 0;
                 }
                 catch(error) {
@@ -135,12 +137,18 @@
                 }
             }
 
-            function drawBlocks() {
-                for(let x = 0; x < CUSTOM_CANVAS.width+blockSize; x+=blockSize) {
+            function drawCanvas(xStart) {
+                const startTime = Date.now();
+                let xFrac = 0;
+                let yFrac = 0;
+                let lightness = 0;
+                let byte = 0;
+                for(let x = xStart; x < CUSTOM_CANVAS.width+blockSize; x+=blockSize) {
+                    xFrac = 2*x/CUSTOM_CANVAS.width-1;
                     for(let y = 0; y < CUSTOM_CANVAS.height+blockSize; y+=blockSize) {
-                        let xFrac = 2*x/CUSTOM_CANVAS.width-1;
-                        let yFrac = -2*y/CUSTOM_CANVAS.height+1;
-                        let lightness = calculateSpot(xFrac, yFrac);
+                        yFrac = -2*y/CUSTOM_CANVAS.height+1;
+
+                        lightness = calculateSpot(xFrac, yFrac);
 
                         if(onlySign) {
                             lightness = (lightness >= 0);
@@ -151,7 +159,7 @@
                         if(gamma) {
                             lightness *= lightness;
                         }
-                        let byte = lightness*255;
+                        byte = lightness*255;
 
                         CANVAS_CONTEXT.fillStyle = `rgb(${byte},${byte},${byte})`;
                         if(blockSize > 1) {
@@ -161,17 +169,21 @@
                             CANVAS_CONTEXT.fillRect(x,y,1,1);
                         }
                     }
+                    if(Date.now() >= startTime+RENDERING_BLOCKING_DURATION) {
+                        setTimeout(() => {drawCanvas(x+blockSize)});
+                        return;
+                    }
                 }
                 if(CANVAS_TEXT.innerHTML == "Drawing") {
                     CANVAS_TEXT.innerHTML = "Finished";
                 }
             }
 
-            function drawFull() {
+            function parseAndDraw() {
                 expression = EXPRESSION_FIELD.value;
                 try {
                     let nodes = math.parse(expression);
-                    code = nodes.compile();
+                    compiledMath = nodes.compile();
                 }
                 catch(error) {
                     CANVAS_TEXT.innerHTML = error.message;
@@ -182,9 +194,8 @@
                 negatives = NEGATIVES_CHECKBOX.checked;
                 blockSize = getBlockSize(Number(RESOLUTION_SLIDER.value));
                 CANVAS_TEXT.innerHTML = "Drawing";
-                setTimeout(drawBlocks);
+                setTimeout(drawCanvas(0), DOM_UPDATE_WAIT_DURATION);
             }
         </script>
-
     </body>
 </html>
