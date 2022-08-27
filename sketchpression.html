@@ -75,13 +75,8 @@
             const GAMMA_CHECKBOX = document.getElementById("gamma");
             const NEGATIVES_CHECKBOX = document.getElementById("negatives");
 
-            const MIN_QUALITY = 0;
-            const MAX_QUALITY = 10;
-            const DEFAULT_QUALITY = 8;
-            const QUALITY_STEP = 1;
-            const MIN_BLOCK_SIZE = 1;
-            const MAX_BLOCK_SIZE = 31;
-            const BLOCK_SIZE_STEP = 2;
+            const BLOCK_SIZES = [32, 16, 8, 4, 2, 1];
+            const DEFAULT_BLOCK_SIZE_INDEX = 3;
             const RENDERING_BLOCKING_DURATION = 100;
             const DOM_UPDATE_WAIT_DURATION = 50;
 
@@ -92,9 +87,8 @@
             let blockSize = 1;
             let compiledMath = "";
 
-            RESOLUTION_SLIDER.max = MAX_QUALITY;
-            RESOLUTION_SLIDER.step = QUALITY_STEP;
-            RESOLUTION_SLIDER.value = DEFAULT_QUALITY;
+            RESOLUTION_SLIDER.max = BLOCK_SIZES.length-1;
+            RESOLUTION_SLIDER.value = DEFAULT_BLOCK_SIZE_INDEX;
 
             DRAW_BUTTON.addEventListener("click", parseAndDraw);
             ONLY_SIGN_CHECKBOX.addEventListener("change", checkboxChanged);
@@ -107,17 +101,6 @@
             function checkboxChanged(event) {
                 GAMMA_CHECKBOX.disabled = ONLY_SIGN_CHECKBOX.checked;
                 NEGATIVES_CHECKBOX.disabled = ONLY_SIGN_CHECKBOX.checked;
-            }
-
-            function getBlockSize(quality) {
-                let qualityFraction = (quality-MIN_QUALITY)/(MAX_QUALITY-MIN_QUALITY);
-                // always allow block size 1
-                if(qualityFraction == 1) {
-                    return 1;
-                }
-                let rawBlockSize = MIN_BLOCK_SIZE + (1-qualityFraction)*(MAX_BLOCK_SIZE-MIN_BLOCK_SIZE);
-                let roundedBlockSize = BLOCK_SIZE_STEP*math.round(rawBlockSize/BLOCK_SIZE_STEP);
-                return roundedBlockSize;
             }
 
             function calculateSpot(horizontal, vertical) {
@@ -141,12 +124,16 @@
                 const startTime = Date.now();
                 let xFrac = 0;
                 let yFrac = 0;
+                let sampleX = 0;
+                let sampleY = 0;
                 let lightness = 0;
                 let byte = 0;
-                for(let x = xStart; x < CUSTOM_CANVAS.width+blockSize; x+=blockSize) {
-                    xFrac = 2*x/CUSTOM_CANVAS.width-1;
-                    for(let y = 0; y < CUSTOM_CANVAS.height+blockSize; y+=blockSize) {
-                        yFrac = -2*y/CUSTOM_CANVAS.height+1;
+                for(let blockX = xStart; blockX < CUSTOM_CANVAS.width+blockSize; blockX+=blockSize) {
+                    sampleX = blockX+(blockSize*0.5);
+                    xFrac = 2*sampleX/CUSTOM_CANVAS.width-1;
+                    for(let blockY = 0; blockY < CUSTOM_CANVAS.height+blockSize; blockY+=blockSize) {
+                        sampleY = blockY+(blockSize*0.5);
+                        yFrac = -2*sampleY/CUSTOM_CANVAS.height+1;
 
                         lightness = calculateSpot(xFrac, yFrac);
 
@@ -162,15 +149,10 @@
                         byte = lightness*255;
 
                         CANVAS_CONTEXT.fillStyle = `rgb(${byte},${byte},${byte})`;
-                        if(blockSize > 1) {
-                            CANVAS_CONTEXT.fillRect(x-blockSize/2,y-blockSize/2,blockSize,blockSize);
-                        }
-                        else {
-                            CANVAS_CONTEXT.fillRect(x,y,1,1);
-                        }
+                        CANVAS_CONTEXT.fillRect(blockX,blockY,blockSize,blockSize);
                     }
                     if(Date.now() >= startTime+RENDERING_BLOCKING_DURATION) {
-                        setTimeout(() => {drawCanvas(x+blockSize)});
+                        setTimeout(() => {drawCanvas(blockX+blockSize)});
                         return;
                     }
                 }
@@ -192,7 +174,7 @@
                 onlySign = ONLY_SIGN_CHECKBOX.checked;
                 gamma = GAMMA_CHECKBOX.checked;
                 negatives = NEGATIVES_CHECKBOX.checked;
-                blockSize = getBlockSize(Number(RESOLUTION_SLIDER.value));
+                blockSize = BLOCK_SIZES[RESOLUTION_SLIDER.value];
                 CANVAS_TEXT.innerHTML = "Drawing";
                 setTimeout(drawCanvas(0), DOM_UPDATE_WAIT_DURATION);
             }
