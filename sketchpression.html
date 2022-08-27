@@ -2,43 +2,41 @@
 <html lang="en">
     <head>
         <title>sketchpression - kvkontin</title>
+        <meta name="description" content="Make images from math expressions in your browser.">
+        <meta name="keywords" content="shader, generative art, 2d function">
         <meta charset="utf-8">
-        <style>
-            
+        <link rel="icon" href="assets/common/kvk_icon.ico" type="image/x-icon">
+
+        <style>   
             * {
                 color: white;
                 font-family: Verdana, sans-serif;
                 font-size: 20px;
                 background-color: #002b36;
             }
-
             canvas {
                 border:1px solid;
                 background-color: white;
                 float: left;
                 margin: 10px;
             }
-
             #expression {
                 margin-top: 20px;
                 color: black;
                 width:inherit;
                 background-color: white;
             }
-
             #controls {
                 width: 640px;
                 margin: 10px;
                 float: left;
             }
-
             #draw {
                 display: block;
                 margin-top: 20px;
                 margin-left: auto;
                 margin-right: auto;
             }
-
         </style>
         <script src="https://cdn.jsdelivr.net/npm/mathjs@9.4.4/lib/browser/math.js"></script>
     </head>
