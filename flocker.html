@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>flocker - kvkontin</title>
+        <meta name="description" content="Observe a simulated flock of drones.">
+        <meta name="viewport" content="width=device-width">
+        <meta charset="utf-8">
+        <link rel="icon" href="assets/common/kvk_icon.ico" type="image/x-icon">
+
+        <style>
+            canvas {
+                position: absolute;
+                background-color: #002b36;
+                margin: 0px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                max-width: 100%;
+                max-height: 100%;
+            }
+            .asset {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="customCanvas" width="1000" height="1000">Canvas tags are not supported</canvas>
+        <!-- Image Assets -->
+        <img id="drone" class="asset" src="assets/flocker/drone.png">
+        <img id="drone_empty" class="asset" src="assets/flocker/drone_empty.png">
+        <img id="home" class="asset" src="assets/flocker/home.png" display="none">
+        <img id="target" class="asset" src="assets/flocker/target.png" display="none">
+
+
+        <script type="text/javascript">
+
+            window.addEventListener("load", function() {
+                const CANVAS = document.getElementById("customCanvas");
+                const CONTEXT = CANVAS.getContext("2d");
+
+                class SimulationObject {
+                    constructor(simulation, x, y) {
+                        this.simulation = simulation;
+                        this.x = x;
+                        this.y = y;
+                        this.scaleFactor = 1;
+                        this.image = undefined;
+                        this.heading = 0;
+                    }
+
+                    draw(context) {
+                        context.save();
+                        context.translate(this.x, this.y);
+                        context.rotate(this.heading);
+                        context.drawImage(this.image,
+                            (-this.image.width/2)*this.scaleFactor,
+                            (-this.image.height/2)*this.scaleFactor,
+                            this.image.width*this.scaleFactor,
+                            this.image.height*this.scaleFactor);
+                        context.restore();
+                    }
+                }
+
+                class Drone extends SimulationObject {
+                    constructor(simulation, x, y, heading) {
+                        super(simulation, x, y)
+                        this.minSpeed = 1;
+                        this.maxSpeed = 1.5;
+                        this.speed = this.minSpeed;
+                        this.heading = heading;
+                        this.maxSteeringImpulse = 0.05;
+                        this.visionRange = 100;
+                        this.collisionAvoidanceRange = 50;
+                        this.collisionAvoidanceMultiplier = 20;
+                        this.groupingRange = 100;
+                        this.groupingMultiplier = 0.01;
+                        this.alignmentMultiplier = 0.3;
+                        this.randomSteeringMultiplier = 0.1;
+                        this.supplies = 1;
+                        this.scaleFactor = 0.5;
+                        this.image = document.getElementById("drone");
+                    }
+
+                    static cap(value, lower, upper) {
+                        return Math.max(Math.min(value, upper), lower);
+                    }
+
+                    changeVelocity(xChange, yChange, limit) {
+                        let intendedMagnitude = Math.sqrt((xChange*xChange)+(yChange*yChange));
+                        if(intendedMagnitude <= 0) return;
+                        let correctionFactor = Math.min(limit/intendedMagnitude, 1)
+                        let oldXSpeed = Math.cos(this.heading)*this.speed;
+                        let oldYSpeed = Math.sin(this.heading)*this.speed;
+                        let newXSpeed = oldXSpeed + xChange*correctionFactor;
+                        let newYSpeed = oldYSpeed + yChange*correctionFactor;
+                        this.speed = Math.sqrt((newXSpeed*newXSpeed)+(newYSpeed*newYSpeed));
+                        this.heading = Math.atan2(newYSpeed, newXSpeed);
+                    }
+
+                    update() {
+                        // Avoid edge
+                        let edgeDesiredX = Drone.cap(this.x, simulation.edgeMargin, simulation.width-simulation.edgeMargin);
+                        let edgeDesiredY = Drone.cap(this.y, simulation.edgeMargin, simulation.height-simulation.edgeMargin);
+
+                        // Avoid collisions
+                        let collisionDesiredX = this.x;
+                        let collisionDesiredY = this.y;
+                        simulation.drones.forEach(drone => {
+                            let offsetX = drone.x-this.x;
+                            let offsetY = drone.y-this.y;
+                            let offsetDirection = Math.atan2(offsetY, offsetX);
+                            let distance = Math.sqrt((offsetX*offsetX)+(offsetY*offsetY));
+                            if(distance > 0 && distance < this.collisionAvoidanceRange) {
+                                collisionDesiredX -= Math.cos(offsetDirection)*this.collisionAvoidanceMultiplier/distance;
+                                collisionDesiredY -= Math.sin(offsetDirection)*this.collisionAvoidanceMultiplier/distance;
+                            }
+                        });
+
+                        // Group up with nearby drones and align direction with them
+                        let groupDesiredX = this.x;
+                        let groupDesiredY = this.y;
+                        let nearbyX = [];
+                        let nearbyY = [];
+                        let nearbySpeedX = [];
+                        let nearbySpeedY = [];
+                        let nearbyDronesFound = 0;
+                        simulation.drones.forEach(drone => {
+                            let offsetX = drone.x-this.x;
+                            let offsetY = drone.y-this.y;
+                            let offsetDirection = Math.atan2(offsetY, offsetX);
+                            let distance = Math.sqrt((offsetX*offsetX)+(offsetY*offsetY));
+                            if(distance > 0 && distance < this.groupingRange) {
+                                nearbyDronesFound++;
+                                nearbyX.push(drone.x);
+                                nearbyY.push(drone.y);
+                                nearbySpeedX.push(drone.speed * Math.cos(drone.heading));
+                                nearbySpeedY.push(drone.speed * Math.sin(drone.heading));
+                            }
+                        });
+                        if(nearbyDronesFound > 0) {
+                            let groupCenterX = nearbyX.reduce((a, b) => a + b, 0) / nearbyDronesFound;
+                            let groupCenterY = nearbyY.reduce((a, b) => a + b, 0) / nearbyDronesFound;
+                            let groupSpeedX = nearbySpeedX.reduce((a, b) => a + b, 0) / nearbyDronesFound;
+                            let groupSpeedY = nearbySpeedY.reduce((a, b) => a + b, 0) / nearbyDronesFound;
+                            groupDesiredX = this.x + this.groupingMultiplier*(groupCenterX-this.x) + groupSpeedX*this.alignmentMultiplier;
+                            groupDesiredY = this.y + this.groupingMultiplier*(groupCenterY-this.y) + groupSpeedY*this.alignmentMultiplier;
+                        }
+
+
+                        // Wander randomly
+                        let wanderDesiredX = this.x;
+                        let wanderDesiredY = this.y;
+                        wanderDesiredX += (Math.random()-0.5)*this.randomSteeringMultiplier;
+                        wanderDesiredY += (Math.random()-0.5)*this.randomSteeringMultiplier;
+
+                        // Create combined steering maneuver
+                        let desiredX = (edgeDesiredX + collisionDesiredX + groupDesiredX + wanderDesiredX) / 4;
+                        let desiredY = (edgeDesiredY + collisionDesiredY + groupDesiredY + wanderDesiredY) / 4;
+                        let deltaX = desiredX-this.x;
+                        let deltaY = desiredY-this.y;
+
+                        // Execute combined change in velocity
+                        this.changeVelocity(deltaX, deltaY, this.maxSteeringImpulse);
+
+                        // Ensure speed is physically possible
+                        this.speed = Drone.cap(this.speed, this.minSpeed, this.maxSpeed);
+
+                        // Obey physics
+                        this.x += Math.cos(this.heading)*this.speed;
+                        this.y += Math.sin(this.heading)*this.speed;
+                    }
+                }
+
+                class Home extends SimulationObject {
+                    constructor(simulation, x, y) {
+                        super(simulation, x, y);
+                        this.image = document.getElementById("home");
+                    }
+                }
+
+                class Simulation {
+                    constructor(context, width, height) {
+                        this.context = context;
+                        this.width = width;
+                        this.height = height;
+                        this.edgeMargin = 100;
+                        this.home = new Home(this, this.width/2, this.height/2);
+                        this.droneCap = 100;
+                        this.initialDrones = 50;
+                        this.drones = [];
+                        for(let i=0; i<this.initialDrones; i++) {
+                            this.drones.push(new Drone(this, this.home.x, this.home.y, Math.random()*2*Math.PI));
+                        }
+                    }
+
+                    update() {
+                        this.drones.forEach(drone => drone.update());
+                    }
+
+                    draw() {
+                        this.context.clearRect(0,0,CANVAS.width, CANVAS.height);
+                        this.home.draw(this.context);
+                        this.drones.forEach(drone => drone.draw(this.context));
+                    }
+                }
+
+                const simulation = new Simulation(CONTEXT, CANVAS.width, CANVAS.height);
+                function mainLoop() {
+                    simulation.update();
+                    simulation.draw();
+                    requestAnimationFrame(mainLoop);
+                }
+                mainLoop();
+            });
+
+
+        </script>
+    </body>
+</html>
