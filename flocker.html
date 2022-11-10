@@ -29,8 +29,8 @@
         <!-- Image Assets -->
         <img id="drone" class="asset" src="assets/flocker/drone.png">
         <img id="drone_empty" class="asset" src="assets/flocker/drone_empty.png">
-        <img id="home" class="asset" src="assets/flocker/home.png" display="none">
-        <img id="target" class="asset" src="assets/flocker/target.png" display="none">
+        <img id="home" class="asset" src="assets/flocker/home.png">
+        <img id="target" class="asset" src="assets/flocker/target.png">
 
 
         <script type="text/javascript">
@@ -76,14 +76,20 @@
                         this.groupingRange = 100;
                         this.groupingMultiplier = 0.01;
                         this.alignmentMultiplier = 0.3;
-                        this.randomSteeringMultiplier = 0.1;
+                        this.waypointSeekingMultiplier = 100;
+                        this.randomSteeringMultiplier = 0.3;
                         this.supplies = 1;
                         this.scaleFactor = 0.5;
                         this.image = document.getElementById("drone");
+                        this.markedForDeletion = false;
                     }
 
                     static cap(value, lower, upper) {
                         return Math.max(Math.min(value, upper), lower);
+                    }
+
+                    distanceTo(object) {
+                        return Math.sqrt((this.x-object.x)*(this.x-object.x)+(this.y-object.y)*(this.y-object.y));
                     }
 
                     changeVelocity(xChange, yChange, limit) {
@@ -147,6 +153,34 @@
                             groupDesiredY = this.y + this.groupingMultiplier*(groupCenterY-this.y) + groupSpeedY*this.alignmentMultiplier;
                         }
 
+                        // Seek home if out of supplies; otherwise seek nearest target
+                        let waypointDeltaX = 0;
+                        let waypointDeltaY = 0;
+                        let waypointDesiredX = this.x;
+                        let waypointDesiredY = this.y;
+                        if(this.supplies <= 0) {
+                            waypointDeltaX = simulation.home.x-this.x;
+                            waypointDeltaY = simulation.home.y-this.y;
+                        }
+                        else if(simulation.targets.length > 0) {
+                            let minDistance = this.visionRange+1;
+                            let bestTarget = simulation.targets[0];
+                            simulation.targets.forEach(target => {
+                                let targetDistance = this.distanceTo(target);
+                                if(targetDistance < minDistance) {
+                                    minDistance = targetDistance;
+                                    bestTarget = target;
+                                }
+                            });
+                            waypointDeltaX = bestTarget.x-this.x;
+                            waypointDeltaY = bestTarget.y-this.y;
+                        }
+                        let distance = Math.sqrt(waypointDeltaX*waypointDeltaX+waypointDeltaY*waypointDeltaY);
+                        if(distance > 0 && distance < this.visionRange) {
+                            waypointDesiredX += waypointDeltaX/distance*this.waypointSeekingMultiplier;
+                            waypointDesiredY += waypointDeltaY/distance*this.waypointSeekingMultiplier;
+                        }
+                        
 
                         // Wander randomly
                         let wanderDesiredX = this.x;
@@ -155,8 +189,8 @@
                         wanderDesiredY += (Math.random()-0.5)*this.randomSteeringMultiplier;
 
                         // Create combined steering maneuver
-                        let desiredX = (edgeDesiredX + collisionDesiredX + groupDesiredX + wanderDesiredX) / 4;
-                        let desiredY = (edgeDesiredY + collisionDesiredY + groupDesiredY + wanderDesiredY) / 4;
+                        let desiredX = (edgeDesiredX + collisionDesiredX + groupDesiredX + wanderDesiredX + waypointDesiredX) / 5;
+                        let desiredY = (edgeDesiredY + collisionDesiredY + groupDesiredY + wanderDesiredY + waypointDesiredY) / 5;
                         let deltaX = desiredX-this.x;
                         let deltaY = desiredY-this.y;
 
@@ -169,6 +203,11 @@
                         // Obey physics
                         this.x += Math.cos(this.heading)*this.speed;
                         this.y += Math.sin(this.heading)*this.speed;
+
+                        // Change to a different graphic if out of supplies
+                        if(this.supplies <= 0) {
+                            this.image = document.getElementById("drone_empty");
+                        }
                     }
                 }
 
@@ -176,31 +215,108 @@
                     constructor(simulation, x, y) {
                         super(simulation, x, y);
                         this.image = document.getElementById("home");
+                        this.hitboxRadius = 50;
+                    }
+
+                    update() {
+                        simulation.drones.forEach(drone => {
+                            let manhattanDistance = Math.abs(drone.x-this.x)+Math.abs(drone.y-this.y);
+                            if(manhattanDistance < this.hitboxRadius && drone.supplies <= 0) {
+                                drone.markedForDeletion = true;
+                            }
+                        });
+                    }
+                }
+
+                class Target extends SimulationObject {
+                    constructor(simulation, x, y) {
+                        super(simulation, x, y);
+                        this.image = document.getElementById("target");
+                        this.markedForDeletion = false;
+                        this.hitboxRadius = 20;
+                        this.health = 5;
+                    }
+
+                    update() {
+                        simulation.drones.forEach(drone => {
+                            let manhattanDistance = Math.abs(drone.x-this.x)+Math.abs(drone.y-this.y);
+                            if(manhattanDistance < this.hitboxRadius && drone.supplies > 0) {
+                                drone.supplies -= 1;
+                                this.health -= 1;
+                                if(this.health <= 0) {this.markedForDeletion = true;}
+                            }
+                        });
+                    }
+
+                    draw(context) {
+                        super.draw(context);
                     }
                 }
 
                 class Simulation {
                     constructor(context, width, height) {
                         this.context = context;
+                        this.frame = 0;
                         this.width = width;
                         this.height = height;
                         this.edgeMargin = 100;
                         this.home = new Home(this, this.width/2, this.height/2);
-                        this.droneCap = 100;
+                        this.droneCap = 50;
+                        this.targetCap = 3;
+                        this.averageFramesPerTarget = 60*10;
+                        this.homeTargetFreeRadius = 200;
+                        this.averageFramesPerDrone = 60*2;
                         this.initialDrones = 50;
                         this.drones = [];
-                        for(let i=0; i<this.initialDrones; i++) {
+                        this.targets = [];
+                        this.spawnDrones(this.initialDrones);
+                        this.spawnTarget(100);
+                    }
+
+                    spawnDrones(count) {
+                        for(let i=0; i<count; i++) {
                             this.drones.push(new Drone(this, this.home.x, this.home.y, Math.random()*2*Math.PI));
                         }
                     }
 
+                    spawnTarget(attemptCount) {
+                        for(let attempt=0; attempt<attemptCount; attempt++) {
+                                    let tryX = this.edgeMargin + Math.random()*(this.width-2*this.edgeMargin);
+                                    let tryY = this.edgeMargin + Math.random()*(this.height-2*this.edgeMargin);
+                                    if(Math.sqrt((tryX-this.home.x)*(tryX-this.home.x)+(tryY-this.home.y)*(tryY-this.home.y))
+                                        > this.homeTargetFreeRadius) {
+                                            this.targets.push(new Target(this, tryX, tryY));
+                                            break;
+                                        }
+                                }
+                    }
+
                     update() {
+                        this.home.update();
                         this.drones.forEach(drone => drone.update());
+                        this.drones = this.drones.filter(drone => !drone.markedForDeletion);
+                        this.targets.forEach(target => target.update());
+                        this.targets = this.targets.filter(target => !target.markedForDeletion);
+
+                        // Small chance to spawn a target if one is missing
+                        if(this.targets.length < this.targetCap) {
+                            if(Math.random() < 1/this.averageFramesPerTarget) {
+                                this.spawnTarget(100);
+                            }
+                        }
+                        
+                        // Small chance to spawn a drone if one is missing
+                        if(this.drones.length < this.droneCap) {
+                            if(Math.random() < 1/this.averageFramesPerDrone) {
+                                this.spawnDrones(1);
+                            }
+                        }
                     }
 
                     draw() {
                         this.context.clearRect(0,0,CANVAS.width, CANVAS.height);
                         this.home.draw(this.context);
+                        this.targets.forEach(target => target.draw(this.context));
                         this.drones.forEach(drone => drone.draw(this.context));
                     }
                 }
