@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>luckydraw - kvkontin</title>
+        <meta name="description" content="Pick a random pair from a spreadsheet.">
+        <meta name="viewport" content="width=device-width">
+        <meta charset="utf-8">
+        <link rel="icon" href="assets/common/kvk_icon.ico" type="image/x-icon">
+
+        <style>
+            * {
+                font-size: 20px;
+                font-family: Verdana, sans-serif;
+            }
+
+            body {
+                color: white;
+                background-color: #002b36;
+                font-size: 20px;
+                font-family: Verdana, sans-serif;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .textentry {
+                margin-top: 20px;
+                color: black;
+                width:inherit;
+                background-color: white;
+            }
+
+            .choice {
+                font-size: 48px;
+                visibility: hidden;
+            }
+            
+            #sheetcontrols {
+                display: none;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <h1>Lucky Draw</h1>
+        
+        <div id="results">
+            <div class="choice" id="output">Option 1<br>Option 2</div>
+        </div>
+
+        <div id="controls">
+            <input type="button" id="draw" value="Draw" onclick=drawNew()>
+            <input type="number" id="count" value="2" min="1" max="10">
+            <br>
+            <label for="duplicates">Allow duplicates</label>
+            <input type="checkbox" id="duplicates" value="false">
+        </div>
+
+        <div id="sheetcontrols">
+            <input id="sheeturl" class="textentry" type="url" placeholder="Paste sheet share link here">
+            <input id="load" type="button" value="Load">
+        </div>
+
+        <textarea id="choices" class="textentry" placeholder="Type choices here as separate lines"></textarea> 
+
+        <script type="text/javascript">
+            function drawNew() {
+                let string = document.getElementById("choices").value;
+                let lines = string.split("\n");
+                let duplicates = document.getElementById("duplicates").checked;
+                let count = document.getElementById("count").value;
+                if(!duplicates) count = Math.min(count, lines.length);
+                document.getElementById("output").innerText = "";
+                for(let roll = 0; roll < count; roll++) {
+                    let index = Math.floor(Math.random()*lines.length);
+                    let choice = lines[index];
+                    if(!duplicates) {
+                        lines.splice(index,1);
+                    }
+                    document.getElementById("output").innerText += choice+"\n";
+                }
+                document.getElementById("output").style.visibility = "visible";
+            }
+        </script>
+    </body>
+</html>
