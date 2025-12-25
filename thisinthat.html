@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>thisinthat - kvkontin</title>
+        <meta name="description" content="Which words in this text are also in that text? Web tool for text editing with whitelists and blacklists.">
+        <meta name="keywords" content="text editor, whitelist, blacklist">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <link rel="icon" href="assets/common/kvk_icon.ico" type="image/x-icon">
+
+        <!-- Include the Quill library (https://quilljs.com) -->
+        <!-- Quill is used for user-editable text areas that support realtime formatting. -->
+        <!-- In plain HTML, changing the contents of an element resets the cursor.  -->
+        <!-- Workarounds include 1) finding and setting the cursor in code, 2) using a hidden editable text. -->
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
+        <style>
+            .editable {
+                font-size: 16px;
+            }
+        </style>
+    </head>
+
+    <body>
+        
+        <h1>thisinthat</h1>
+        <p>Which words in this text are also in that text?</p>
+
+        <label for="textToCheck">Check this text</label>
+        <div id="textToCheck" class="editable" contenteditable="plaintext-only" oninput="inputsChanged()">
+        </div>
+
+        <div class="controls">
+            <fieldset oninput="inputsChanged()">
+                <legend>Highlight</legend>
+                <input type="radio" id="highlightIfFound" name="highlightMode" value="ifFound" checked>
+                <label for="highlightIfFound">if found</label>
+                <br>
+                <input type="radio" id="highlightIfNotFound" name="highlightMode" value="ifNotFound">
+                <label for="highlightIfNotFound">if not found</label>
+                <br>
+                <input type="radio" id="highlightBoth" name="highlightMode" value="both">
+                <label for="highlightBoth">both differently</label>
+            </fieldset>
+
+            <label for="separators">Separator characters</label>
+            <input id="separators" type="text" value=". ,-" oninput="inputsChanged()">
+            <input id="caseSensitive" type="checkbox" oninput="inputsChanged()">
+            <label for="caseSensitive">Case-sensitive</label>
+        </div>
+
+        <label for="wordListText" >Use this text as the basis</label>
+        <div id="wordListText" class="editable" contenteditable="plaintext-only" oninput="inputsChanged()">
+        </div>
+
+
+        <script>
+
+            const textToCheckField = document.querySelector("#textToCheck");
+            const wordListTextField = document.querySelector("#wordListText");
+            const separatorsInput = document.querySelector("#separators");
+            const highlightIfFoundRadio = document.querySelector('#highlightIfFound');
+            const highlightIfNotFoundRadio = document.querySelector('#highlightIfNotFound');
+            const highlightBothRadio = document.querySelector('#highlightBoth');
+            const caseSensitiveCheckbox = document.querySelector('#caseSensitive');
+
+            const textFormats = {
+                default: {
+                    'color': 'rgb(0,0,0)', // black
+                    'background': 'rgb(255,255,255)' // white
+                },
+                found: {
+                    'color': 'rgb(0,0,0)', // black
+                    'background': 'rgb(64,255,64)' // light green
+                },
+                notFound: {
+                    'color': 'rgb(255,255,255)', // white
+                    'background': 'rgb(128,0,0)' // dark red
+                }
+            }
+
+            // Editor for text-to-check displays text colour and background colour
+            const quillToCheck = new Quill(textToCheckField, {
+                formats: ['color', 'background'],
+                modules: {
+                    toolbar: [],
+                },
+                placeholder: 'Text to check and highlight',
+                theme: 'snow'
+            });
+
+            // Editor for word list doesn't display any formatting
+            const quillWordList = new Quill(wordListTextField, {
+                formats: [],
+                modules: {
+                    toolbar: []
+                },
+                placeholder: 'Whitelist, blacklist or text to compare against',
+                theme: 'snow'
+            });
+
+            // Use a web worker to process text without freezing the interface
+            if(!window.Worker) {
+                alert("Web Workers are required but not supported. Please make sure your browser is up to date.");
+            }
+            const worker = new Worker("assets/thisinthat/word-checker-webworker.js");
+
+            // When any of the input fields change, send texts off to worker
+            function inputsChanged() {
+                worker.postMessage({
+                    textToCheck: textToCheckField.innerText,
+                    wordListText: wordListTextField.innerText,
+                    separatorsText: separatorsInput.value+'\n', // Always split on newline
+                    caseSensitive: caseSensitiveCheckbox.checked
+                });
+            }
+
+            // When worker returns processed text, format each substring by its (lack of) occurrence
+            worker.onmessage = (event) => {
+
+                const highlightIfFound = highlightIfFoundRadio.checked || highlightBothRadio.checked;
+                const highlightIfNotFound = highlightIfNotFoundRadio.checked || highlightBothRadio.checked;
+
+                let charIndex = 0;
+                for (const entry of event.data) {
+
+                    let textFormat = textFormats.default;
+
+                    if(entry.found && highlightIfFound) {
+                        textFormat = textFormats.found;
+                    }
+                    if(!entry.found && highlightIfNotFound) {
+                        textFormat = textFormats.notFound;
+                    } 
+                    quillToCheck.formatText(charIndex, entry.substring.length, textFormat);
+                    charIndex += entry.substring.length;
+                }
+            }
+        
+        </script>
+    </body>
+</html>
