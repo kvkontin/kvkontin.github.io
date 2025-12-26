@@ -15,9 +15,16 @@
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 
+
         <style>
             .editable {
                 font-size: 16px;
+                margin-top: 10px;
+                margin-bottom: 16px;
+            }
+            .controls {
+                margin-top: 16px;
+                margin-bottom: 16px;
             }
         </style>
     </head>
@@ -50,7 +57,7 @@
             <label for="caseSensitive">Case-sensitive</label>
         </div>
 
-        <label for="wordListText" >Use this text as the basis</label>
+        <label for="wordListText">Use this text as the basis</label>
         <div id="wordListText" class="editable" contenteditable="plaintext-only" oninput="inputsChanged()">
         </div>
 
@@ -84,7 +91,8 @@
             const quillToCheck = new Quill(textToCheckField, {
                 formats: ['color', 'background'],
                 modules: {
-                    toolbar: [],
+                    // Script handles formatting, user needs no toolbar
+                    toolbar: false,
                 },
                 placeholder: 'Text to check and highlight',
                 theme: 'snow'
@@ -94,7 +102,8 @@
             const quillWordList = new Quill(wordListTextField, {
                 formats: [],
                 modules: {
-                    toolbar: []
+                    // No formatting so no toolbar either
+                    toolbar: false,
                 },
                 placeholder: 'Whitelist, blacklist or text to compare against',
                 theme: 'snow'
