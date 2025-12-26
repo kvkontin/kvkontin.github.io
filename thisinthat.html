@@ -36,7 +36,7 @@
         <p>Which words in this text are also in that text?</p>
 
         <label for="textToCheck">Check this text</label>
-        <div id="textToCheck" oninput="inputsChanged()">
+        <div id="textToCheck">
         </div>
 
         <div class="controls">
@@ -59,7 +59,7 @@
         </div>
 
         <label for="wordListText">Use this text as the basis</label>
-        <div id="wordListText" oninput="inputsChanged()">
+        <div id="wordListText">
         </div>
 
 
@@ -98,6 +98,7 @@
                 placeholder: 'Text to check and highlight',
                 theme: 'snow'
             });
+            quillToCheck.on('text-change', inputsChanged);
 
             // Editor for word list doesn't display any formatting
             const quillWordList = new Quill(wordListTextField, {
@@ -109,6 +110,7 @@
                 placeholder: 'Whitelist, blacklist or text to compare against',
                 theme: 'snow'
             });
+            quillWordList.on('text-change', inputsChanged);
 
             // Use a web worker to process text without freezing the interface
             if(!window.Worker) {
