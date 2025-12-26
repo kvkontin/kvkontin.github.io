@@ -17,7 +17,8 @@
 
 
         <style>
-            .editable {
+            /* rich-text editor provided by Quill */
+            .ql-container {
                 font-size: 16px;
                 margin-top: 10px;
                 margin-bottom: 16px;
@@ -35,7 +36,7 @@
         <p>Which words in this text are also in that text?</p>
 
         <label for="textToCheck">Check this text</label>
-        <div id="textToCheck" class="editable" contenteditable="plaintext-only" oninput="inputsChanged()">
+        <div id="textToCheck" oninput="inputsChanged()">
         </div>
 
         <div class="controls">
@@ -58,7 +59,7 @@
         </div>
 
         <label for="wordListText">Use this text as the basis</label>
-        <div id="wordListText" class="editable" contenteditable="plaintext-only" oninput="inputsChanged()">
+        <div id="wordListText" oninput="inputsChanged()">
         </div>
 
 
