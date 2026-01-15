@@ -3,14 +3,14 @@
     <head>
         <title>Nomai Language Dictionary</title>
         <meta charset="UTF-8">
-        <meta name="description" content="Search the dictionary of the fanmade Nomai language">
+        <meta name="description" content="Search the dictionary of the fanmade Nomai language.">
         <meta name="author" content="kvkontin">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <style>
             :root {
                 --background-dark: #37342c;
-                --background-light: #f1d892;
+                --background-light: #f4e1ac;
                 --content-dark: #ffffff;
                 --content-light: #000000;
                 --highlight-orange-dark: #ff8f4e;
@@ -27,21 +27,21 @@
                 background-color: var(--background);
                 color: var(--content);
                 font-family: Verdana, sans-serif;
-                font-size: 16px;
+                font-size: 14px;
                 line-height: 1.6;
             }
             #lightDarkButton {
                 position: absolute;
                 top: 8px;
-                right: 16px;
+                right: 14px;
                 z-index: 1;
             }
             #headingContainer {
-                padding: 16px;
+                padding: 14px;
             }
             h1 {
                 color: var(--highlight-blue);
-                font-size: 32px;
+                font-size: 28px;
             }
             .lastUpdated {
                 color: var(--highlight-orange);
@@ -51,32 +51,34 @@
                 top: 0px;
                 left: 0px;
                 margin: 0px;
-                padding-left: 16px;
-                padding-top: 0px;
-                padding-bottom: 10px;
+                padding-left: 14px;
+                padding-top: 4px;
+                padding-bottom: 8px;
             }
             #selections, #searchBar {
                 display: inline-block;
-                margin-top: 4px;
-                margin-bottom: 4px;
             }
             input, button, select {
                 border-color: var(--content);
                 border-style: solid;
                 border-width: 2px;
-                border-radius: 8px;
+                border-radius: 6px;
                 padding: 4px;
+                margin-top: 4px;
+                margin-bottom: 4px;
             }
             #results {
                 margin: auto;
                 max-width: 600px;
+                padding-left: 14px;
+                padding-right: 14px;
             }
             .dictionaryEntry {
                 padding-bottom: 10px;
             }
             .romanisation {
                 font-family: 'Courier New', monospace;
-                font-size: 24px;
+                font-size: 20px;
                 font-weight: bold;
                 color: var(--highlight-blue);
                 margin-bottom: 0px;
@@ -91,7 +93,7 @@
                 padding-bottom: 0px;
             }
             .partOfSpeech {
-                font-size: 14px;
+                font-size: 12px;
                 color: var(--highlight-orange);
                 margin-top: 0px;
                 padding-top: 0px;
@@ -117,7 +119,7 @@
             <h1>Nomai Language Dictionary</h1>
             <p class="lastUpdated">Updated
             <span class=lastUpdated>
-                15 January 2026
+                16 January 2026
             </span>
         </p>
         </div>
@@ -266,9 +268,9 @@
 
 
             function updateControlsVisibility() {
-                visibilityValue = ["all entries", "untranslatables"].includes(showSelect.value) ? "hidden" : "visible";
+                visibilityValue = ["all entries", "untranslatables"].includes(showSelect.value) ? "none" : "initial";
                 for (element of searchControlsGroup) {
-                    element.style.visibility = visibilityValue;
+                    element.style.display = visibilityValue;
                 }
             }
 
