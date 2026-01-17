@@ -243,7 +243,7 @@
                             "pronunciation": lineSplits[2],
                             "romanisation": lineSplits[3],
                             "definition": lineSplits[4],
-                            "keywords": lineSplits[5].split(',')
+                            "keywords": lineSplits[5].split(',').map((string) => string.trim())
                         };
 
                         lexiconBeingBuilt.push(newEntry);
