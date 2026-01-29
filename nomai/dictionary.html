@@ -3,46 +3,15 @@
     <head>
         <title>Nomai Language Dictionary</title>
         <link rel="icon" type="image/x-icon" href="../assets/nomai/nomai_icon.ico">
+        <link rel="stylesheet" href="../assets/nomai/nomai_default_style.css">
         <meta charset="UTF-8">
         <meta name="description" content="Search the dictionary of the fanmade Nomai language.">
         <meta name="author" content="kvkontin">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <style>
-            :root {
-                --background-dark: #37342c;
-                --background-light: #f4e1ac;
-                --content-dark: #ffffff;
-                --content-light: #000000;
-                --highlight-orange-dark: #ff8f4e;
-                --highlight-orange-light: #a13202;
-                --highlight-blue-dark: #879efd;
-                --highlight-blue-light: #4c65c9;
-
-                --background: var(--background-dark);
-                --content: var(--content-dark);
-                --highlight-blue: var(--highlight-blue-dark);
-                --highlight-orange: var(--highlight-orange-dark);
-            }
-            * {
-                background-color: var(--background);
-                color: var(--content);
-                font-family: Verdana, sans-serif;
-                font-size: 14px;
-                line-height: 1.6;
-            }
-            #lightDarkButton {
-                position: absolute;
-                top: 8px;
-                right: 14px;
-                z-index: 1;
-            }
             #headingContainer {
                 padding: 14px;
-            }
-            h1 {
-                color: var(--highlight-blue);
-                font-size: 28px;
             }
             .lastUpdated {
                 color: var(--highlight-orange);
@@ -114,6 +83,7 @@
     </head>
 
     <body>
+        <a href="/nomai/home.html">&lt; back to Nomai home</a>
         <button id="lightDarkButton" onclick="darkModeToggled()">Mode: dark</button>
 
         <div id="headingContainer">

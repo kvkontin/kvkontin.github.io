@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Nomai Language Homepage</title>
+        <link rel="icon" type="image/x-icon" href="../assets/nomai/nomai_icon.ico">
+        <link rel="stylesheet" href="../assets/nomai/nomai_default_style.css">
+        <meta charset="UTF-8">
+        <meta name="description" content="Fanmade constructed Nomai language.">
+        <meta name="author" content="kvkontin">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+            main {
+                padding: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <a href="/index.html">&lt; back to kvkontin</a>
+        <button id="lightDarkButton" onclick="darkModeToggled()">Mode: dark</button>
+
+        
+        <main>
+            <h1>Nomai Language Home</h1>
+            <p><i>Siwaihoo dalté!</i> Hello, friend!</p>
+
+            <h2>What is this?</h2>
+
+            <p>
+                Nomai is a constructed language. It is constructed in the sense that a small group of people
+                deliberately created every feature. It is a language in the sense that you can speak any
+                imaginable message in it, just like any human language, but you'll need a dictionary and a
+                textbook, again just like any human language. Constructed languages are called conlangs for short.
+            </p>
+
+            <h2>Why is this?</h2>
+
+            <p>
+                <a href="https://www.mobiusdigitalgames.com/outer-wilds.html">Outer Wilds</a> is a mystery
+                action-adventure video game. The player character studies the writings of an ancient alien species,
+                the Nomai. In-game, text is shown in English and any symbols are just repeating placeholders.
+                We like the game and the portrayal of the Nomai so much we decided to change that.
+            </p>
+
+            <p>
+                We strive to create a true language that could be what the Nomai spoke, if only we had
+                more information about them. We won't contradict game canon, but any details the game
+                didn't supply are made up. Basically this is a type of highly technical fanfiction.
+            </p>
+
+            <p>
+                We highly recommend you play Outer Wilds! The game is sensitive to spoilers,
+                but this site has none.
+            </p>
+
+            <h2>Who are you?</h2>
+
+            <p>
+                We are puzzle game fans, linguistics students, linguistics hobbyists, and various types of nerd.
+                At the time of writing, there are 17 of us. We mostly met on the unofficial Outer Wilds Discord server.
+            </p>
+            <p>
+                I am KVK, also known as Frin, the creator of the rest of this website including the not-Nomai bits.
+            </p>
+
+            <h2>How do I learn more?</h2>
+
+            <p>
+                For a quick and pretty way to find Nomai words, check the
+                <a href="/nomai/dictionary.html">interactive dictionary</a>.
+            </p>
+
+            <p>
+                Our authoritative resource is the
+                <a href="https://docs.google.com/spreadsheets/d/1rhIVwV0jYY9r2NUKl_DB_wLGVuqgEm2qoLoqcqH1SUc/edit?usp=sharing">
+                main spreadsheet</a>. Everything else gets information from there, and additions arrive
+                there first.
+            </p>
+
+            <p>
+                Everyone is welcome to visit or join us on our <a href="discord.gg/qRAYz466WZ">Discord server!</a>
+                For any length of question and any depth of answer, that's where we are happiest to talk.
+            </p>
+
+            <p>You can reach me by email at [the part of this page's address before the first period]@gmail.com.</p>
+        </main>
+
+        <footer>
+            <p>
+                This fanwork is not affiliated with Outer Wilds, Mobius Digital, or Annapurna Interactive.
+            </p>
+            <p>
+                2026 kvkontin
+            </p>
+        </footer>
+
+
+        <script>
+            const lightDarkButton = document.querySelector("#lightDarkButton");
+            let darkMode = false;
+
+            init();
+
+            function init() {
+                setDarkModePreference();
+            }
+
+            function setDarkModePreference () {
+                darkMode = false;
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    darkMode = true;
+                }
+            }
+
+            function darkModeToggled() {
+                darkMode = !darkMode;
+                const suffixString = darkMode? "dark" : "light";
+                lightDarkButton.textContent = `Mode: ${suffixString}`;
+                const root = document.querySelector(":root");
+                root.style.setProperty("--background",          `var(--background-${suffixString})`);
+                root.style.setProperty("--content",             `var(--content-${suffixString})`);
+                root.style.setProperty("--highlight-blue",      `var(--highlight-blue-${suffixString})`);
+                root.style.setProperty("--highlight-orange",    `var(--highlight-orange-${suffixString})`);
+            }
+        </script>
+
+    </body>
+</html>
