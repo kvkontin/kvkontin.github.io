@@ -10,6 +10,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <style>
+            * {
+                font-style: normal;
+            }
             main {
                 padding: 10px;
             }
@@ -18,6 +21,27 @@
             }
             td {
                 padding: 6px 4px 6px 4px;
+            }
+            .sample {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            .nomai {
+                margin-right: 1ex;
+                padding: 0px;
+            }
+            .glossed {
+                display: flex;
+            }
+            .word {
+                color: var(--highlight-blue);
+                font-style: italic;
+            }
+            .gloss {
+                opacity: 0.5;
+            }
+            .trans {
+                display: block;
             }
         </style>
     </head>
@@ -616,10 +640,38 @@
 
             <h2>Clauses</h2>
 
+            <div class="sample">
+                <div class="glossed">
+                    <div class="nomai">
+                        <div class="word">Ndéexi</div>
+                        <div class="gloss">clan-SPC</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">hémi</div>
+                        <div class="gloss">identify</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">fony</div>
+                        <div class="gloss">signal</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">léesis.</div>
+                        <div class="gloss">captain-SPC-ERG</div>
+                    </div>
+                </div>
+
+                <div class="trans">
+                    (As known to the clan,) the captain is identifying signals.
+                </div>
+            </div>
+
             <p>
                 Most clauses in Nomai consist of a verb surrounded by the noun phrases that take part
                 in the action. Verbs are grouped by how many noun phrases they can take. The maximum
-                is three, for a transitive verb:
+                is three, which are usually in this order:
             </p>
 
             <ol>
@@ -633,32 +685,125 @@
                 to make the claim? What part of a shared universe preserves the traces of the action?
                 In what context or framework is the meaning relevant? What is the evidence?
                 Impersonal verbs like <i>cofse</i> 'rain' that describe loosely localised states
-                take only an observer.
+                take only an observer. Observers are in the default unmarked case, also called
+                absolute case.
             </p>
 
             <p>
                 The experiencer answers these questions: What changes state as the action happens?
                 What is affected (often involuntarily)? What specific part of a whole is created or
                 destroyed? Intransitive verbs like <i>onda</i> 'sleep' that directly affect 
-                only one entity take an observer and an experiencer.
+                only one entity take an observer and an experiencer. Experiencers are in the default
+                unmarked case, like observers.
             </p>
 
             <p>
                 The agent answers these questions: Who or what initiates the change? Who wants the action?
-                What is the active force? 
+                What is the active force? Agents are in the ergative case, marked with the suffix
+                <i>-(y)s</i>.
             </p>
 
             <p>
-                Observer and experiencer are in the unmarked default case, also called absolute case.
-                Agent inflects for ergative case by gaining the suffix <i>-(y)s</i>.
+                Agent and experiencer can be swapped. Doing so makes the agent background information
+                the experiencer newsworthy.
             </p>
 
+            <div class="sample">
+                <div class="glossed">
+                    <div class="nomai">
+                        <div class="word">Ndéexi</div>
+                        <div class="gloss">clan-SPC</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">hémi</div>
+                        <div class="gloss">identify</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">léesis</div>
+                        <div class="gloss">captain-SPC-ERG</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">fony.</div>
+                        <div class="gloss">signal</div>
+                    </div>
+                </div>
+
+                <div class="trans">
+                    (As known to the clan,) what the captain is identifying is <b>signals</b>.
+                </div>
+            </div>
+
             <p>
-                Basic word order is [observer, verb, experiencer, agent]. Agent and experiencer
-                can be swapped; doing so focuses on the agent and minimises the experiencer. Experiencer,
-                agent, or both can be omitted at will; this leaves them vague while intentionally not
+                Experiencer, agent, or both can be omitted. This leaves them vague while intentionally not
                 pointing at any entity mentioned in surrounding discourse. Observer is mandatory.
             </p>
+
+            <div class="sample">
+                <div class="glossed">
+                    <div class="nomai">
+                        <div class="word">Ndéexi</div>
+                        <div class="gloss">clan-SPC</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">hémi</div>
+                        <div class="gloss">identify</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">fony.</div>
+                        <div class="gloss">signal</div>
+                    </div>
+                </div>
+
+                <div class="trans">
+                    (As known to the clan,) signals are being identified.
+                </div>
+            </div>
+
+            <div class="sample">
+                <div class="glossed">
+                    <div class="nomai">
+                        <div class="word">Ndéexi</div>
+                        <div class="gloss">clan-SPC</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">hémi.</div>
+                        <div class="gloss">identify</div>
+                    </div>
+                </div>
+
+                <div class="trans">
+                    (As known to the clan,) some identifying is happening.
+                </div>
+            </div>
+
+            <div class="sample">
+                <div class="glossed">
+                    <div class="nomai">
+                        <div class="word">Ndéexi</div>
+                        <div class="gloss">clan-SPC</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">hémi</div>
+                        <div class="gloss">identify</div>
+                    </div>
+
+                    <div class="nomai">
+                        <div class="word">léesis.</div>
+                        <div class="gloss">captain-SPC-ERG</div>
+                    </div>
+                </div>
+
+                <div class="trans">
+                    (As known to the clan,) the captain is identifying something.
+                </div>
+            </div>
 
             <p>
                 In practice, the experiencer and agent work much like in human languages that
