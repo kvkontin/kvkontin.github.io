@@ -48,7 +48,8 @@
                 display: block;
             }
             details {
-                background-color: rgba(0, 0, 0, 0.2);
+                /* Background is inverted version of content colour, transparent */
+                background-color: hsl(from var(--content) h s calc(100 - l) / 0.3);
                 padding: 10px;
                 margin: 10px;
             }
