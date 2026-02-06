@@ -12,6 +12,10 @@
         <style>
             * {
                 font-style: normal;
+                background-color: transparent;
+            }
+            body {
+                background-color: var(--background);
             }
             main {
                 padding: 10px;
@@ -42,6 +46,11 @@
             }
             .translated {
                 display: block;
+            }
+            details {
+                background-color: rgba(0, 0, 0, 0.2);
+                padding: 10px;
+                margin: 10px;
             }
         </style>
     </head>
@@ -669,9 +678,9 @@
             </div>
 
             <p>
-                Most clauses in Nomai consist of a verb surrounded by the noun phrases that take part
-                in the action. Verbs are grouped by how many noun phrases they can take. The maximum
-                is three, which are usually in this order:
+                Most clauses in Nomai consist of a verb surrounded by its arguments (the noun phrases
+                that take part in the action). Verbs are grouped by how many noun phrases they
+                can take. The maximum is three, which are usually in this order:
             </p>
 
             <ol>
@@ -810,6 +819,906 @@
                 have ergativity, and the observer is something like a Japanese topic or a
                 very detailed form of evidentiality.
             </p>
+
+            <h2>Tense</h2>
+
+            <p>
+            Tense (relative scheduling of when things happen) is marked not on verbs, but on the
+            associated nouns. The two directions in time are marked with suffixes: <i>-w(y)</i>
+            for past, <i>-(e)x</i> for future. For convenience, nouns without either suffix
+            are called present.
+            </p>
+
+            <p>Tense markings on the three core arguments work together like so:</p>
+
+            <ul>
+                <li>Observer: when the speaker receives the information from the
+                    observer, relative to when the sentence is produced.
+                </li>
+                <li>
+                    Experiencer: when the action takes place,
+                    relative to when the speaker receives the information.
+                </li>
+                <li>
+                    Agent: the short-term schedule of the action
+                    (future for imminently upcoming, past for completed but with lingering effects),
+                    relative to when the action takes place.
+                </li>
+            </ul>
+
+            <details>
+                <summary>Examples with present observer</summary>
+                <h3>Present, present, present</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llái</div>
+                            <div class="gloss">staff-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylis.</div>
+                            <div class="gloss">apprentice-SPC-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice is using the staff.
+                    </div>
+                </div>
+
+                <h3>Present, present, past</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llái</div>
+                            <div class="gloss">staff-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice has (just) been using the staff.
+                    </div>
+                </div>
+
+                <h3>Present, present, future</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llái</div>
+                            <div class="gloss">staff-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylixys.</div>
+                            <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice is about to use the staff.
+                    </div>
+                </div>
+
+                <h3>Present, past, present</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lláiwy</div>
+                            <div class="gloss">staff-SPC-PST</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylis.</div>
+                            <div class="gloss">apprentice-SPC-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice was using the staff (earlier).
+                    </div>
+                </div>
+
+                <h3>Present, past, past</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lláiwy</div>
+                            <div class="gloss">staff-SPC-PST</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice had
+                        (just) been using the staff (when something else happened).
+                    </div>
+                </div>
+
+                <h3>Present, past, future</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lláiwy</div>
+                            <div class="gloss">staff-SPC-PST</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylixys.</div>
+                            <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice was
+                        about to use the staff (when something else happened).
+                    </div>
+                </div>
+
+                <h3>Present, future, present</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llájex</div>
+                            <div class="gloss">staff-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylis.</div>
+                            <div class="gloss">apprentice-SPC-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice will be using the staff.
+                    </div>
+                </div>
+
+                <h3>Present, future, past</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llájex</div>
+                            <div class="gloss">staff-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice will have
+                        been using the staff (by the time something else happens).
+                    </div>
+                </div>
+
+                <h3>Present, future, future</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýi</div>
+                            <div class="gloss">sound-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llájex</div>
+                            <div class="gloss">staff-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I'm hearing now), the apprentice will
+                        be about to use the staff (by the time something else happens).
+                    </div>
+                </div>
+
+            </details>
+
+            
+            <details>
+                <summary>Examples with past observer</summary>
+
+                    <h3>Past, present, present</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">llái</div>
+                                <div class="gloss">staff-SPC</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">ránylis.</div>
+                                <div class="gloss">apprentice-SPC-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the apprentice was using the staff.
+                        </div>
+                    </div>
+
+                    <h3>Past, present, past</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">llái</div>
+                                <div class="gloss">staff-SPC</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">rányliwys.</div>
+                                <div class="gloss">apprentice-SPC-PST-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the
+                            apprentice had (just) been using the staff.
+                        </div>
+                    </div>
+
+                    <h3>Past, present, future</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">llái</div>
+                                <div class="gloss">staff-SPC</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">ránylixys.</div>
+                                <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the
+                            apprentice was about to use the staff.
+                        </div>
+                    </div>
+
+                    <h3>Past, past, present</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lláiwy</div>
+                                <div class="gloss">staff-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">ránylis.</div>
+                                <div class="gloss">apprentice-SPC-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the
+                            apprentice was using the staff.
+                        </div>
+                    </div>
+
+                    <h3>Past, past, past</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lláiwy</div>
+                                <div class="gloss">staff-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">rányliwys.</div>
+                                <div class="gloss">apprentice-SPC-PST-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the apprentice
+                            had (just) been using the staff.
+                        </div>
+                    </div>
+
+                    <h3>Past, past, future</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lláiwy</div>
+                                <div class="gloss">staff-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">ránylixys.</div>
+                                <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the apprentice
+                            had been about to use the staff.
+                        </div>
+                    </div>
+
+                    <h3>Past, future, present</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">llájex</div>
+                                <div class="gloss">staff-SPC-FUT</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">ránylis.</div>
+                                <div class="gloss">apprentice-SPC-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the apprentice
+                            would use the staff (after that).
+                        </div>
+                    </div>
+
+                    <h3>Past, future, past</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">llájex</div>
+                                <div class="gloss">staff-SPC-FUT</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">rányliwys.</div>
+                                <div class="gloss">apprentice-SPC-PST-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the apprentice was going to
+                            have used the staff (by the time when something else happened).
+                        </div>
+                    </div>
+
+                    <h3>Past, future, future</h3>
+
+                    <div class="sample">
+                        <div class="glossedSentence">
+                            <div class="glossedWord">
+                                <div class="word">Xaamýiwy</div>
+                                <div class="gloss">sound-SPC-PST</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">lex</div>
+                                <div class="gloss">use</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">llájex</div>
+                                <div class="gloss">staff-SPC-FUT</div>
+                            </div>
+
+                            <div class="glossedWord">
+                                <div class="word">ránylixys.</div>
+                                <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                            </div>
+                        </div>
+
+                        <div class="translated">
+                            Judging by the sound (I heard earlier), the apprentice was going to be
+                            about to use the staff (by the time when something else happened).
+                        </div>
+                    </div>
+            </details>
+
+            <details>
+                <summary>Examples with future observer</summary>
+
+                <h3>Future, present, present</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llái</div>
+                            <div class="gloss">staff-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylis.</div>
+                            <div class="gloss">apprentice-SPC-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice
+                        will be using the staff (at that time).
+                    </div>
+                </div>
+
+                <h3>Future, present, past</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llái</div>
+                            <div class="gloss">staff-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will
+                        have (just) been using the staff.
+                    </div>
+                </div>
+
+                <h3>Future, present, future</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llái</div>
+                            <div class="gloss">staff-SPC</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylixys.</div>
+                            <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will be about to use the staff.
+                    </div>
+                </div>
+
+                <h3>Future, past, present</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lláiwy</div>
+                            <div class="gloss">staff-SPC-PST</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylis.</div>
+                            <div class="gloss">apprentice-SPC-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will have used the staff (earlier).
+                    </div>
+                </div>
+
+                <h3>Future, past, past</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lláiwy</div>
+                            <div class="gloss">staff-SPC-PST</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will have (just) been using the staff (when something else happens).
+                    </div>
+                </div>
+
+                <h3>Future, past, future</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lláiwy</div>
+                            <div class="gloss">staff-SPC-PST</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylixys.</div>
+                            <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will be
+                        about to use the staff (when something else happens).
+                    </div>
+                </div>
+
+                <h3>Future, future, present</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llájex</div>
+                            <div class="gloss">staff-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylis.</div>
+                            <div class="gloss">apprentice-SPC-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will be going to use the staff.
+                    </div>
+                </div>
+
+                <h3>Future, future, past</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llájex</div>
+                            <div class="gloss">staff-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">rányliwys.</div>
+                            <div class="gloss">apprentice-SPC-PST-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice
+                        will have been using the staff (by the time something else happens).
+                    </div>
+                </div>
+
+                <h3>Future, future, future</h3>
+
+                <div class="sample">
+                    <div class="glossedSentence">
+                        <div class="glossedWord">
+                            <div class="word">Xaamýjex</div>
+                            <div class="gloss">sound-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">lex</div>
+                            <div class="gloss">use</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">llájex</div>
+                            <div class="gloss">staff-SPC-FUT</div>
+                        </div>
+
+                        <div class="glossedWord">
+                            <div class="word">ránylixys.</div>
+                            <div class="gloss">apprentice-SPC-FUT-ERG</div>
+                        </div>
+                    </div>
+
+                    <div class="translated">
+                        Judging by the sound (I predict I'll hear), the apprentice will be
+                        about to use the staff (by the time something else happens).
+                    </div>
+                </div>
+                
+            </details>
+
+            <p>
+                Arguments that are omitted or cannot occur with the verb are ambiguous for tense.
+            </p>
+
+            <div class="sample">
+                <div class="glossedSentence">
+                    <div class="glossedWord">
+                        <div class="word">Xipix</div>
+                        <div class="gloss">grass-SPC-PST</div>
+                    </div>
+
+                    <div class="glossedWord">
+                        <div class="word">cofse</div>
+                        <div class="gloss">rain</div>
+                    </div>
+                </div>
+
+                <div class="translated">
+                    <p>
+                        Any of:
+                    </p>
+                    <ul>
+                        <li>Judging by the grass, it was raining.</li>
+                        <li>Judging by the grass, it had rained.</li>
+                        <li>Judging by the grass, it would rain.</li>
+                    </ul>
+                    <p>
+                        More precisely: "I observed the grass and thought this:
+                        there is some rain involved at some point"
+                    </p>
+                </div>
+            </div>
 
             <h2>What next?</h2>
 
