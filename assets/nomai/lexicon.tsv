@@ -283,7 +283,7 @@ TRUE	noun (inanimate)	e.la.ɬø̃j	elahlói	close encounter, passing-by; periaps
 TRUE	noun (inanimate)	ẽʎ	éll	the phoneme /ẽ/ and the matching letter	/ẽ/, é	
 TRUE	noun (inanimate)	e.ɲiw	enniu	gold (element, related to nni 'two')	gold	
 TRUE	noun (animate)	e.pa.te.pe	epatepe	a type of predatory fish known to an unseen non-Nomai species, similar to some sharks; (Outer Wilds system) anglerfish	anglerfish, shark	
-TRUE	adverb	e.pe	epe	still, even now, without having changed	still	
+TRUE	adverb	e.pe	epe	still, (in negatives) not yet, indicates that there has not been a change	still, yet, not yet	
 TRUE	noun (inanimate)	eɾ.ɕiː.li	erxiili	elegant solution, efficient approach, trick as in "there's a trick to it"	solution, trick, knack, mastery	
 TRUE	noun (animate)	ẽ.tãː.pi	étáapi	alien, sapient non-Nomai (or with context, not the species being discussed)	alien	
 TRUE	noun (inanimate)	ew.møj	eumoi	poem, verse, lyrics (art consisting of language obeying a surface level constraint)	poem, verse, lyrics	
@@ -711,7 +711,6 @@ TRUE	noun (inanimate)	ne	ne	the phoneme /n/ and the matching letter	/n/, n
 TRUE	particle	nẽ	né	spoken equivalent to a colon or info-box under a header, as in "Update: We succeeded" (Left side takes a noun phrase that defines the message itself, right side takes a sentence. Noun phrase on left uses specific form to mark definiteness.)	colon, untranslatable	
 TRUE	noun (inanimate)	nẽːl.dy.mej	néeldumei	pilgrimage, coming of age, rite of passage	pilgrimage, rite	
 FALSE		nẽːl.jy.me	néeljume			
-TRUE	adverb	neɸ	nef	still, (in negatives) not yet, indicates that there has not been a change	still, yet, not yet	
 TRUE	noun (animate)	nẽɸ.hẽɸ	néfhéf	confidant, inner circle member, loved one	confidant, member, loved one	
 TRUE	noun (inanimate)	nej	nei	the future	future	
 TRUE	verb (transitive)	nẽll	néll	strain, encumber, stress	strain, encumber, stress	
@@ -871,8 +870,8 @@ TRUE	noun (inanimate)	piːl	piil	torch, lantern, flashlight	torch, lantern, flas
 TRUE	noun (inanimate)	piː.ʙyː	piivuu	fire, controlled burn, incineration; campfire	fire, campfire	
 TRUE	verb (transitive)	pil.dy	pildu	{experiencer} occur, manifest as trait, have influence; {agent} have, exemplify, be characterised by {experiencer}	occur, happen, have, characterise, characterize	
 TRUE	noun (inanimate)	pil.dy.høɕ	pilduhox	trait, property, characteristic	trait, property, characteristic	
+TRUE	verb (transitive)	piɾ	pir	escape, evade, flee from; (of action) avoid, beware, know better than to	escape, evade, flee, run	
 TRUE	pronoun	pi.ɾəː	piryy	this (thing, being, or situation close to or mentioned by speaker)	this	
-TRUE	verb (transitive)	pi.ʙəːʎ	pivyyll	escape, evade, flee from	escape, evade, flee, run	
 TRUE	verb (transitive)	pjaɾ	pjar	soak in, steep with, {agent} stay with {experiencer} and slowly affect it	soak, steep, affect, influence	
 TRUE	noun (inanimate)	pjẽw	pjéu	mirage, illusion, false vision; artifact of sensor or encoding	mirage, illusion, artifact, glitch	
 TRUE	verb (intransitive)	pjøj	pjoi	be (somewhere) in an unstable way, be passing through; hang, cling, balance	be, pass, hang, cling, balance	
@@ -1340,6 +1339,8 @@ TRUE	noun (inanimate)	ə.ɕa	yxa	blood (anatomical term, not violence nor herita
 TRUE	verb (intransitive)	əː.paː	yypaa	run, sprint (massive strain for Nomai bodies, only done in emergencies and reluctantly even then); be crazy, glitch, malfunction; (colloquial) commit, go all out	run, sprint, crazy, glitch, malfunction, commit	
 TRUE	noun (inanimate)	əːs	yys	the phoneme /əː/ and the matching letter	/əː/, yy	
 TRUE	noun (inanimate)	ə̃ːɕ	ýyx	the phoneme /ə̃ː/ and the matching letter	/ə̃ː/, ýy	
+FALSE				forgiveness?		
+FALSE				juice, sap; drink, beverage		
 FALSE	noun (inanimate)			part of sky below eye level but above the terrain; horizon, distant places, edge of vision	horizon	
 TRUE	verb (transitive)			fake, forge, lie about, present something else in place of, spoof	fake, forge, lie, spoof	
 FALSE				argument?		
