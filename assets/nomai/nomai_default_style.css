@@ -32,6 +32,9 @@ h2 {
     color: var(--highlight-orange);
     font-size: 24px;
 }
+h3 {
+    color: var(--highlight-orange);
+}
 a {
     color: var(--highlight-blue);
 }
