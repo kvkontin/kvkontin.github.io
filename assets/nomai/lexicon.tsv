@@ -7,13 +7,10 @@ FALSE				backup, replacement, substitute?
 FALSE				music instrument?		
 FALSE				forgiveness?		
 FALSE				juice, sap; drink, beverage		
-FALSE	verb (transitive)			fake, forge, lie about, present something else in place of, spoof	fake, forge, lie, spoof	
 FALSE				argument?		
 FALSE				logic, inference, induction?		
-FALSE				daughter	daughter	
 FALSE	noun (inanimate)			(piece of) poop, crap; bodily wastes in general (casual or vulgar word)	poop, crap, shit	
 FALSE				equation, formula?		
-FALSE	noun (inanimate)			hammer, mallet, cudgel, blunt force tool	hammer, mallet, cudgel	
 TRUE	verb (impersonal)	ãːdɾa	áadra	it be busy, it be hectic, there be activity	busy, hectic, active, activity	
 TRUE	noun (inanimate)	aːs	aas	the phoneme /aː/ and the matching letter	/aː/, aa	
 TRUE	noun (inanimate)	ãːɕ	áax	the phoneme /ãː/ and the matching letter	/ãː/, áa	
@@ -31,6 +28,7 @@ TRUE	verb (transitive)	ãwɾ	áur	remember, apply knowledge of	remember, memory
 TRUE	noun (inanimate)	aw.te	aute	inventory, totality of items someone is holding or has access to; (archaic) shoulder-wool; (idiomatic) physically felt emotions, "bones", core of someone's being	inventory, hold, item, access, emotions, core, soul	
 TRUE	verb (intransitive)	a.ʙẽ.cẽ	avécé	zip, shoot, streak, go quickly; rush, hurry, head straight (towards somewhere)	zip, shoot, streak, quickly, fast, rush, hurry, straight, directly	
 TRUE	noun (inanimate)	ã.wẽʎ	áwéll	electricity, electric charge (note: sign convention is opposite the human one, electrons are positive)	electricity, charge, electron	
+TRUE	noun (animate)	a.ɕa.ci ɾi.ʙəː.ʙyː.mã	axaci rivyyvuumá	the Statue Workshop	statue workshop	
 TRUE	noun (animate)	a.ɕaj	axai	workshop, manufacturing plant	workshop, manufacture, factory	
 TRUE	pronoun	bã	bá	he, she, it, the one the narrative is about, 3S.PROX, third-person proximate singular pronoun	he, she, it	
 TRUE	adjective	bãː.by	báabu	medium amount, average few-many	much, little, medium, amount	
@@ -38,8 +36,7 @@ TRUE	verb (transitive)	ba.ce	bace	support, prop up, hold under compression	suppo
 TRUE	verb (transitive)	bãɸ	báf	throw, toss, drop, put in freefall by letting go of	throw, toss, drop, let go	
 TRUE	noun (inanimate)	baɸ.ɲẽ	bafnné	hill, mound, meadow (usually very low and smooth)	hill, mound, meadow	
 TRUE	verb (transitive)	bãj	bái	interest, stimulate, be neat to	interest, neat	
-TRUE		ba.me	bame	strict, strong (of conjecture), which makes claims about many situations; limiting, picky	strict, strong, limiting, picky	
-FALSE			#REF!			
+TRUE	adjective	ba.me	bame	strict, strong (of conjecture), which makes claims about many situations; limiting, picky	strict, strong, limiting, picky	
 TRUE	verb (transitive)	bã.ɾe	báre	smith, forge, industrially manufacture, create with heavy machinery	smith, forge, manufacture, produce	
 TRUE	noun (inanimate)	bã.ɾe.cãwɾ	bárecáur	smithy, forge, machinery workshop	smithy, forge, workshop	
 TRUE	noun (inanimate)	bã.ɾe.cãw.ɾi dəː.lil.di ti.ɬə̃ɾ	bárecáuri dyylildi tihlýr	the Black Hole Forge	black hole forge	
@@ -317,7 +314,7 @@ TRUE	noun (inanimate)	ɸeɸ.naː	fefnaa	a kind of fluffy plant, used for thread 
 TRUE	verb (transitive)	ɸe.ɬiː	fehlii	send, play, emit, express (message, sound, signal, emotion or the like)	send, play, emit, express	
 TRUE	noun (animate)	ɸel.dil	feldil	(alternate universe) Hearthian individual, from Late Hearthian valdel of the same meaning (word courtesy of TransienceRealized on AO3)	hearthian	
 TRUE	noun (inanimate)	ɸeʎ.cel	fellcel	aluminium (element)	aluminium	
-TRUE	verb (intransitive)	ɸes.ɲẽ	fesnné	be funny to, be silly to	funny, silly	
+TRUE	verb (intransitive)	ɸes.ɲẽ	fesnné	be funny, be silly	funny, silly	
 TRUE	noun (inanimate)	ɸi	fi	the phoneme /ɸ/ and the matching letter	/ɸ/, f	
 TRUE	adjective	ɸiɸ.da	fifda	quiet, soft, with little sound	quiet	
 TRUE	noun (inanimate)	ɸiː	fii	mane, fur, long hair	mane, fur, hair	
@@ -332,8 +329,11 @@ TRUE	pronoun	ɸjø.ɕøː	fjoxoo	you two, the two of you, 2D, second-person dual
 TRUE	verb (transitive)	ɸmiː	fmii	pat, stroke, ruffle (someone or something fluffy)	pat, stroke, ruffle	pat
 TRUE	adverb	ɸnãj	fnái	suddenly, forcefully, unexpectedly	suddenly, forcefully, unexpectedly	
 TRUE	verb (transitive)	ɸne	fne	smell, (passively) perceive the smell of	smell	
+TRUE	verb (transitive)	ɸneɸ	fnef	fake, forge, lie about, present something else in place of, (technology) spoof, mock	fake, forge, lie, spoof, mock	
+FALSE			#REF!			
 TRUE	conjunction (clause)	ɸne.je	fneje	as long as, if only, X conj Y = Y is sufficient condition for X	as long as, if only	
 TRUE	verb (intransitive)	ɸnəːs	fnyys	think something, believe, internally contain a world-model	think, believe	
+TRUE	noun (inanimate)	ɸø̃ɬ	fóhl	nest, bedding, cushioned or insulated place; nursery, sickbed	nest, bed, bedding, cushion, insulation, nursery, sickbed	
 FALSE		ɸøɬ.lẽ	fohllé			
 TRUE	noun (inanimate)	ɸø̃.jø	fójo	pile, heap, stack	pile, heap, stack	
 TRUE	noun (animate)	ɸø.ɲa	fonna	creature, beast, explicitly mindless mobile lifeform	creature, beast, animal	
@@ -347,6 +347,7 @@ TRUE	adverb	ɸø̃ɕ	fóx	at medium speed, average slowly/fast	medium speed, spe
 TRUE	interjection	ɸɾa	fra	(onomatopoeia) sudden, chaotic, low-pitched sound: crack, crash, boom	crack, crash, boom	
 TRUE	adverb	ɸɾãː	fráa	objectively, literally, in all even remotely relevant senses	objectively, literally	
 TRUE	noun (inanimate)	ɸɾej	frei	wisps, thin floaty ends of uncommonly long hairs, very outermost part of a coat of wool; (geometry) bounding box, bounding volume, convex shell; space framed by the extremities of, places between (parts of an object, members of a group)	wisp, end, bounding box, bounds, volume, shell, between	
+TRUE	interjection	ɸy	fu	expression of disgust or refusal: ugh, eugh, ew; pff	ugh, eugh, ew, pff, pfft	
 TRUE	noun (inanimate)	ɸyː.ni	fuuni	wheel, gear, cog, spinner, any disk-shape on an axle; tracks (of a vehicle)	wheel, gear, cog, disk, track	
 TRUE	adjective	ɸyː.ɲø̃	fuunnó	grippy, high-friction	grippy, friction	
 TRUE	noun (inanimate)	ɸyː.sa	fuusa	air, gas mixture that can be breathed, the stuff of a habitable atmosphere; prototype: fresh and gently flowing	air	air
@@ -405,6 +406,7 @@ TRUE	noun (animate)	hi.lẽːs	hilées	bird, bat, any of a diverse clade of wing
 TRUE	noun (inanimate)	hi.ni	hini	(road) sign, label, header	sign, label, header	
 TRUE	pronoun	hi.ɾẽ	hiré	that (thing, being, or situation far from both speaker and listener, or mentioned by a third party)	that	
 TRUE	noun (animate)	hi.ʙy.nas	hivunas	observatory, site for taking readings of outside world	observatory	
+TRUE	interjection	ɬãːj	hláai	expression of interest or curiosity: ooh, huh, hmm	oo, ooh, huh, hmm	
 TRUE	adjective	ɬaːs	hlaas	good, fair, moral, right, deserved	good, fair, moral, right, deserved	
 TRUE	interjection	ɬaːw	hlaau	argh, augh (instinctive cry of distress, influenced by an obsolete noun meaning 'drought')	argh, augh	
 TRUE	adjective	ɬa.bɾeː.mø	hlabreemo	derived, abstracted, emergent, high-level, behaving differently from its underlying mechanisms; (of person) trained, drilled, with new instincts; traumatised	derived, abstracted, trained, drilled, traumatised	
@@ -489,7 +491,6 @@ TRUE	noun (inanimate)	je.ɸeʎ	jefell	region of substance with strong movement a
 TRUE	numeral	je.hã	jehá	one-thirthysixth (6^-2)	6^-2	
 TRUE	verb (transitive)	je.hãː	jeháa	annoy, irritate, bother	annoy, irritate, bother	
 TRUE	noun (inanimate)	jel	jel	tree (chiefly taller than person height and broad-leaved)	tree	
-FALSE		jẽʎ.di	jélldi			
 TRUE	verb (transitive)	jø	jo	{agent} move {experiencer} along surface or against friction: push, tow, drag	move, push, tow, drag	
 TRUE	noun (inanimate)	jø.ja	joja	voice, vocalisation, call	voice, vocalisation, call	
 TRUE	noun (inanimate)	jø.lø	jolo	base, foundation, holder, pedestal	base, foundation, holder, pedestal	
@@ -534,7 +535,7 @@ TRUE	noun (animate)	lẽːs	lées	chief, clan head, vessel captain	chief, head, 
 TRUE	adjective	lẽɸ.ɕe	léfxe	incompletely optimised, half-done, tentative, sloppy	incomplete, half, half-done, tentative, sloppy	
 TRUE	adjective	lẽɬ.ɾyː	léhlruu	withering, struggling, ailing, in bad health	withering, struggling, ailing, health	
 TRUE	noun (inanimate)	le.həɬ	lehyhl	kit, set, selection (of tools or the like)	kit, set, selection	
-TRUE	noun (inanimate)	lẽ.jø	léjo	succulent (plant), type of thick-leafed groundcover from arid regions	succulent	
+TRUE	noun (inanimate)	lẽ.jø	léjo	succulent (plant), type of thick-leafed groundcover from arid regions; (Outer Wilds system) cactus	succulent, cactus	
 TRUE	verb (transitive)	le.lø̃j	lelói	unfold, expand, stretch out (of door/hatch: close)	unfold, unfurl, expand, stretch, stretch out, close	
 TRUE	verb (intransitive)	lẽ.ɾas	léras	be intact, be whole, be unharmed	intact, whole, unharmed	
 TRUE	noun (inanimate)	lẽw	léu	top of the soil, consisting of compressed dead plants, (name) Thatch	thatch	
@@ -687,6 +688,7 @@ TRUE	noun (inanimate)	məː.ʙəː	myyvyy	berry, kernel, separable piece of edib
 TRUE	noun (inanimate)	nãː.cãː	náacáa	type of plant with an oblong underground bulb known for pungent taste: onion, garlic, leek; (name) Allium	onion, garlic, leek, allium	
 TRUE	noun (inanimate)	naːs	naas	fruit (growing from an above-ground stem or branch, regardless of consistency or sugar content)	fruit	
 TRUE	noun (inanimate)	na.bãj	nabái	tail (chiefly like that of Nomai: straight, cylindrical, and furred)	tail	
+TRUE	verb (transitive)	na.bãs.mej	nabásmei	guide, show around; raise, care for (a child)	guide, show, raise, care	
 TRUE	verb (transitive)	na.dɾa	nadra	control, steer, attend, give commands to (prototype: like aiming a telescope)	control, steer, attend	
 TRUE	noun (inanimate)	na.dɾa.dø̃j	nadradói	control input, command, order, function call, machine instruction	input, command, order, function, call, instruction	
 TRUE	verb (intransitive)	nãɸ	náf	dine, feast, celebrate something by eating; (archaic) graze in one unusually rich spot, from the edges in	dine, feast, celebrate, graze	
@@ -742,6 +744,7 @@ TRUE	adjective	ɲã.bə̃	nnábý	nice, polite, courteous (obeying Nomai social
 TRUE	noun (animate)	ɲãj	nnái	gang, clique, informal gathering	gang, clique, gathering	
 TRUE	verb (transitive)	ɲãj.lãs	nnáilás	trample, muddy up; use up, wear out; explore throughout; overstay one's welcome 	trample, muddy, muddy up, use, use up, wear, wear out	
 TRUE	noun (inanimate)	ɲãʎ	nnáll	excrete, eliminate, emit, put out	excrete, eliminate, emit, put out	
+TRUE	noun (inanimate)	ɲã.mø̃.nẽ	nnámóné	smoothie, shake, sludge, thick semifluid food used to sustain Nomai through long experiments	smoothie, shake, sludge	
 TRUE	noun (animate)	ɲas.ɲy	nnasnnu	cook, designated food preparer	cook	
 TRUE	adjective	ɲã.ʙeː	nnávee	lukewarm, medium-temperature	lukewarm, temperature	
 TRUE	verb (transitive)	ɲe.das.cəj	nnedascyi	depict, portray, {agent} be information about {experiencer}; {agent} pretend to be {experiencer}, act as	depict, portray, pretend, about, act, act as	
@@ -845,6 +848,7 @@ TRUE	noun (inanimate)	ø̃miɬ	ómihl	shadow; night, place where the planet bloc
 TRUE	verb (intransitive)	ø.nda	onda	sleep, be in an unaware state, be dormant	sleep, unaware, dormant, unconscious, rest	
 TRUE	noun (inanimate)	ø.nda.cãwɾ	ondacáur	bunkroom, dormitory, berthing	bunkroom, dorm, dormitory, berthing	
 TRUE	verb (transitive)	ø̃.ɲẽw	ónnéu	find, locate	find, locate	
+TRUE	verb (intransitive)	ø̃.nə̃ː	ónýy	sneak, creep, trespass, hide oneself	sneak, creep, trespass, hide	
 TRUE	noun (inanimate)	ø̃ː.ɸyɾ	óofur	flag, banner, streamer, windsock, label or landmark made of coloured cloth (usually sewn so the wind will lift or inflate it)	flag, banner, streamer, windsock, kite	
 TRUE	noun (inanimate)	ø̃ːʎ	óoll	the phoneme /ø̃/ and the matching letter	/ø̃/, ó	
 TRUE	noun (inanimate)	øːs	oos	the phoneme /øː/ and the matching letter	/øː/, oo	
@@ -884,6 +888,7 @@ TRUE	adjective	peɕ.ɾø̃ː	pexróo	(ancient) not part of a herd; (modern) unco
 TRUE	noun (inanimate)	pi	pi	the phoneme /p/ and the matching letter	/p/, p	
 TRUE	verb (transitive)	pi.ce	pice	find out, work out, figure out, learn, calculate, come to know (chiefly by non-immediate calculation)	learn, calculate, find out, work out	
 TRUE	noun (inanimate)	pi.ce.høɕ	picehox	answer, solution, that which is calculated or learned	answer, solution	
+TRUE	verb (intransitive)	pi.cy.my	picumu	commit mischief, eavesdrop, trick, prank	mischief, eavesdrop, trick, prank	
 TRUE	noun (animate)	piː	pii	method, manner, approach; (archaic) huddle, row, arrangement of Nomai standing shoulder to shoulder	method, manner, approach, huddle, row	
 TRUE	noun (inanimate)	piːl	piil	torch, lantern, flashlight	torch, lantern, flashlight	
 TRUE	noun (inanimate)	piː.ʙyː	piivuu	fire, controlled burn, incineration; campfire	fire, campfire	
@@ -896,9 +901,9 @@ TRUE	noun (inanimate)	pjẽw	pjéu	mirage, illusion, false vision; artifact of s
 TRUE	verb (intransitive)	pjøj	pjoi	be (somewhere) in an unstable way, be passing through; hang, cling, balance	be, pass, hang, cling, balance	
 TRUE	noun (inanimate)	pjy	pju	hand, prehensile hoof; toolhead, active end or part; cursor, working directory	hand, toolhead, cursor	
 TRUE	conjunction (clause)	pøj	poi	and then later	then, later, and	
+TRUE	noun (inanimate)	pø̃j	pói	hammer, mallet, cudgel, blunt force tool	hammer, mallet, cudgel	
 TRUE	adjective	pø.lə̃	polý	tired, fatigued, exhausted, worn	tired, fatigued, exhausted, worn	
 TRUE	adjective	pø.ma	poma	heavy, weighty	heavy	
-FALSE		pø̃ː.nə̃	póoný			
 TRUE	noun (inanimate)	pø̃.sø̃ː	pósóo	oil (food term, prototype: squeezed from seeds)	oil, fat	
 TRUE	noun (inanimate)	pø.ʙaɕ	povax	gravity (related to poma 'heavy')	gravity	
 TRUE	adverb	pɾaː	praa	really, truly, indeed (general purpose intensifier for confidence of belief)	really, truly, indeed, intensifier	
@@ -1130,6 +1135,7 @@ TRUE	adjective	tø̃.py	tópu	yellowish green (colour detected by a Nomai lower 
 TRUE	noun (inanimate)	tɾãː.mø̃	tráamó	type of flower that opens in the evening, highly toxic, sometimes used psychoactively; (name) Datura	datura	
 TRUE	adjective	tɾeːw	treeu	curious, intriguing, which might hint at something learnable	curious, intriguing, fascinating	
 TRUE	particle	tɾi	tri	before a clause, introduces it as a direct quote complement to a verb of belief or communication, like the colon in "Solanum thought: How curious!"	untranslatable, quote	
+TRUE	noun (animate)	tɾiw	triu	daughter	daughter	
 TRUE	noun (inanimate)	tɾy	tru	rest, remainder, other part; (archaic) audience, reviewers	rest, remainder, other, remaining, audience, reviewer, reviewers	
 TRUE	numeral	tsaː	tsaa	six (6^1, connective form)	six	
 TRUE	adjective	tsaɬ	tsahl	compact, blocky; shaped like an ingot, bar, or squished cylinder (common form to store materials); unused, in reserve, in waiting	compact, blocky, ingot, bar, unused, reserve, raw	
@@ -1157,6 +1163,7 @@ TRUE	verb (transitive)	təːl	tyyl	touch, remain in physical contact with, have 
 TRUE	noun (inanimate)	tə̃ː.wiʎ	týywill	oven, furnace, enclosed heatable box (originally for pottery, now diverse)	oven, furnace	
 TRUE	noun (inanimate)	y.bɾi	ubri	time(slot), period within a structured schedule, allotted share of time	time, period, slot	
 TRUE	verb (intransitive)	y.ɸẽɾ	ufér	dance; mime, enact, perform a sequence of bodily actions for an observer	dance, mime, enact	
+TRUE	noun (inanimate)	y.ɸẽɾ.cãwɾ	ufércáur	stage, theatre, place for performing (originally dances, now any spectated art)	stage, theatre, theater	
 TRUE	interjection	yj	ui	used to call for attention: hey, ahoy; ambiguous filler: oh	hey, ahoy, oh	
 TRUE	noun (inanimate)	yl	ul	the phoneme /y/ and the matching letter	/y/, y	
 TRUE	verb (transitive)	yl.søː	ulsoo	skim, skirt, barely touch on the way somewhere; get a gravity slingshot from	skim, skirt, touch, slingshot	
@@ -1221,7 +1228,7 @@ TRUE	adjective	ʙø.jə̃ː	vojýy	medium-sharpness, average sharp/rounded	sharp
 TRUE	conjunction (clause)	ʙø.lø̃ɬ	volóhl	until, lasting up to when	until	
 FALSE		ʙø.ɲy	vonnu			
 TRUE	noun (animate)	ʙøː.deɸ	voodef	passenger, rider, someone transported by a vehicle	passenger, rider	
-TRUE		ʙø̃ːɾ	vóor	surprise, do something unexpected to	surprise, unexpected	
+TRUE	verb (transitive)	ʙø̃ːɾ	vóor	surprise, do something unexpected to	surprise, unexpected	
 TRUE	noun (inanimate)	ʙyl	vul	name (chiefly that of a person or place); title, heading	name, title, heading	
 TRUE	noun (inanimate)	ʙyː	vuu	forehead and nose bridge, area formed by raised bony plate at the front of the skull	forehead, nose, skull	
 TRUE	noun (inanimate)	ʙyː.jøː	vuujoo	visor, goggles, glasses, any equipment worn over the eyes	visor, goggles, glasses, eyewear	
@@ -1348,7 +1355,7 @@ TRUE	noun (animate)	ɕy.mə̃	xumý	human (English loan, not canon to OW univers
 TRUE	adjective	ɕy.tə̃	xutý	medium-friction, average slippery/grippy	medium-friction, slippery, grippy	
 TRUE	verb (transitive)	ɕyːɾ	xuur	demand brains from, be intellectually difficult for, challenge	challenge, difficult	
 TRUE	adjective	ɕə̃.liɬ	xýlihl	previous, preceding	previous, preceding	
-TRUE		ɕəl.ɕa	xylxa	capture, contain, imprison, trap	capture, contain, imprison, trap	
+TRUE	verb (transitive)	ɕəl.ɕa	xylxa	capture, contain, imprison, trap	capture, contain, imprison, trap	
 TRUE	noun (inanimate)	ɕəs.wa	xyswa	hypothesis, prediction of a future observation including conditions to trigger it	hypothesis	
 TRUE	noun (inanimate)	ɕə̃.tø.ɸø̃	xýtofó	question, inquiry, an unknown, act of asking	question, inquiry, unknown	
 TRUE	conjunction (clause)	ɕəː	xyy	or, else, in the opposite case	or, else, otherwise	
@@ -1368,25 +1375,21 @@ TRUE	verb (intransitive)	ə.tɬø̃	ytló	scoff, snort; sneeze	scoff, snort, sne
 TRUE	noun (inanimate)	ə.ɕa	yxa	blood (anatomical term, not violence nor heritage)	blood	
 TRUE	verb (intransitive)	əː.paː	yypaa	run, sprint (massive strain for Nomai bodies, only done in emergencies and reluctantly even then); be crazy, glitch, malfunction; (colloquial) commit, go all out	run, sprint, crazy, glitch, malfunction, commit	
 TRUE	noun (inanimate)	əːs	yys	the phoneme /əː/ and the matching letter	/əː/, yy	
+TRUE	verb (transitive)	ə̃ːʙy	ýyvu	{agent} take {experiencer} as unmodifiable, {agent} use {experiencer} as an axiom; (alien studies) {experiencer} be sacred	axiom, fix, fixed, sacred, holy	
 TRUE	noun (inanimate)	ə̃ːɕ	ýyx	the phoneme /ə̃ː/ and the matching letter	/ə̃ː/, ýy	
+FALSE				radio wave?		
+FALSE				toilet, hygiene room (on early Vessels only space with water disposal, nowadays automated body cleaner)	toilet, hygiene	
 FALSE				after ("after an hour")		
 FALSE	adjective			(of tool) inert, solid-state, without moving parts, manual, dumb	inert, manual, dumb	
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
-FALSE						
+FALSE	noun (inanimate)			iteration, estimate, initial guess to improve on, starting point for a refining process	iteration, estimate, guess, start	
+FALSE	noun (inanimate)			lazy solution; path that doesn't cross mountains?		
+FALSE	noun (animate)			status, connectedness, contribution, that which measures the health of a Nomai social network		
+FALSE				taste, flavour?		
+FALSE				horizontal?		
+FALSE				vertical?		
+FALSE	noun (inanimate)			the Probe Tracking Module	module	
+FALSE	noun (inanimate)			the Control Module	module	
+FALSE	noun (inanimate)			the Launch Module	module	
 FALSE						
 FALSE						
 FALSE						
