@@ -25,7 +25,7 @@
                 padding-top: 4px;
                 padding-bottom: 8px;
             }
-            #selections, #searchBar {
+            #selections, #searchBar, #accentHandlingInner {
                 display: inline-block;
             }
             input, button, select {
@@ -119,6 +119,13 @@
                     <option>begins with</option>
                     <option>ends with</option>
                 </select>
+
+                <div id="accentHandling">
+                    <div id="accentHandlingInner">
+                        <input id="exactAccents" type="checkbox" checked>
+                        <label for="exactAccents">Match accent marks</label>
+                    </div>
+                </div>
             </div>
 
             <div id="searchBar">
@@ -165,9 +172,11 @@
             const showSelect = document.querySelector("#show");
             const searchField = document.querySelector("#searchField");
             const searchHandling = document.querySelector("#searchHandling");
+            const accentHandling = document.querySelector("#accentHandling")
+            const exactAccentsCheckbox = document.querySelector("#exactAccents")
             const searchTerm = document.querySelector("#searchTerm");
             const searchButton = document.querySelector("#searchButton");
-            const searchControlsGroup = [searchField, searchHandling, searchTerm, searchButton];
+            const searchControlsGroup = [searchField, searchHandling,  accentHandling, searchTerm, searchButton];
             const errorMessage = document.querySelector("#errorMessage");
             const lightDarkButton = document.querySelector("#lightDarkButton");
             let darkMode = false;
@@ -245,6 +254,20 @@
                 }
             }
 
+            function stripAccentMarks(string) {
+                let output = string;
+                const mapping = [
+                    ['á', 'a'],
+                    ['é', 'e'],
+                    ['ó', 'o'],
+                    ['ý', 'y'],
+                ];
+                for (entry of mapping) {
+                    output = output.replaceAll(entry[0], entry[1]);
+                }
+                return output;
+            }
+
 
             function doSearch() {
 
@@ -252,8 +275,10 @@
 
                 const showMode = showSelect.value;
                 const field = searchField.value;
-                const term = searchTerm.value;
+                let term = searchTerm.value.toLowerCase();
+
                 const handling = searchHandling.value;
+                const exactAccents = exactAccentsCheckbox.checked;
 
                 const fieldNameMap = {
                     "one translation": "keywords",
@@ -268,6 +293,9 @@
 
                 const startMark = (handling == "is exactly" || handling == "begins with") ? "^" : "";
                 const endMark = (handling == "is exactly" || handling == "ends with") ? "$" : "";
+                if(!exactAccents) {
+                    term = stripAccentMarks(term);
+                }
                 const regex = new RegExp(`${startMark}${term}${endMark}`, "ig"); // ignore case, global search
 
                 for (lexiconEntry of lexicon) {
@@ -290,9 +318,12 @@
                                 continue;
                             }
                         }
-                        else if(lexiconEntry[relevantFieldName].match(regex)) {
-                            results.push(lexiconEntry);
-                            continue;
+                        else {
+                            if(!exactAccents && stripAccentMarks(lexiconEntry[relevantFieldName]).match(regex)
+                            || lexiconEntry[relevantFieldName].match(regex)) {
+                                results.push(lexiconEntry);
+                                continue;
+                            }
                         }
                     }
                 }
