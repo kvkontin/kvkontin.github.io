@@ -90,47 +90,47 @@
             <h1>Nomai Language Dictionary</h1>
             <p class="lastUpdated">Updated
             <span class=lastUpdated>
-                16 May 2026
+                4 June 2026
             </span>
         </p>
         </div>
         
-        <div id="controls">
+        <form id="controls" name="controls" method="get" target="_self">
             <div id="selections">
 
                 <label for="show">Show</label>
-                <select id="show" oninput="inputsChanged()">
-                    <option>all entries</option>
-                    <option>untranslatables</option>
-                    <option>entries where</option>
+                <select id="show" name="show" oninput="inputsChanged()">
+                    <option value="all">all entries</option>
+                    <option value="untrans">untranslatables</option>
+                    <option value="where">entries where</option>
                 </select>
                 
-                <select id="searchField">
-                    <option>one translation</option>
-                    <option>full definition</option>
-                    <option>romanisation</option>
-                    <option>pronunciation</option>
-                    <option>part of speech</option>
+                <select id="searchField" name="field">
+                    <option value="trans">one translation</option>
+                    <option value="def">full definition</option>
+                    <option value="word">romanisation</option>
+                    <option value="ipa">pronunciation</option>
+                    <option value="pos">part of speech</option>
                 </select>
 
-                <select id="searchHandling">
-                    <option>contains</option>
-                    <option>is exactly</option>
-                    <option>begins with</option>
-                    <option>ends with</option>
+                <select id="searchHandling" name="op">
+                    <option value="has">contains</option>
+                    <option value="is">is exactly</option>
+                    <option value="begin">begins with</option>
+                    <option value="end">ends with</option>
                 </select>
 
                 <div id="accentHandling">
                     <div id="accentHandlingInner">
-                        <input id="exactAccents" type="checkbox" checked>
+                        <input id="exactAccents" type="checkbox" name="accents" value="exact" checked>
                         <label for="exactAccents">Match accent marks</label>
                     </div>
                 </div>
             </div>
 
             <div id="searchBar">
-                <input id="searchTerm" type="text">
-                <button id="searchButton" onclick="doSearch()">Search</button>
+                <input id="searchTerm" type="search" name="q">
+                <button id="searchButton"type="submit">Search</button>
             </div>
 
             <div id="searchCountLine">
@@ -142,7 +142,7 @@
                     <a href="https://docs.google.com/spreadsheets/d/1rhIVwV0jYY9r2NUKl_DB_wLGVuqgEm2qoLoqcqH1SUc/edit?usp=sharing">
                         the spreadsheet</a> directly.</p>
             </div>
-        </div>
+        </form>
 
         <div id="results">
             <template id="resultEntryTemplate">
@@ -166,20 +166,24 @@
 
         <script>
 
+            let doneLoading = false;
+            let darkMode = false;
+
+            const controlsForm = document.querySelector("#controls");
             const resultsContainer = document.querySelector("#results");
             const template = document.querySelector("#resultEntryTemplate");
             const searchCount = document.querySelector("#searchCount");
             const showSelect = document.querySelector("#show");
             const searchField = document.querySelector("#searchField");
             const searchHandling = document.querySelector("#searchHandling");
-            const accentHandling = document.querySelector("#accentHandling")
+            const accentHandling = document.querySelector("#accentHandling");
+            const accentHandlingInner = document.querySelector("#accentHandlingInner");
             const exactAccentsCheckbox = document.querySelector("#exactAccents")
             const searchTerm = document.querySelector("#searchTerm");
             const searchButton = document.querySelector("#searchButton");
-            const searchControlsGroup = [searchField, searchHandling,  accentHandling, searchTerm, searchButton];
+            const searchControlsGroup = [searchField, searchHandling, accentHandling, accentHandlingInner, searchTerm, searchButton];
             const errorMessage = document.querySelector("#errorMessage");
             const lightDarkButton = document.querySelector("#lightDarkButton");
-            let darkMode = false;
 
             const lexiconLocation = "../assets/nomai/lexicon.tsv";
             let lexicon = [];
@@ -188,15 +192,66 @@
 
 
             function init() {
+                const params = validateParams(paramsToObject(new URLSearchParams(location.search)));
+                setFormState(params);
                 setDarkModePreference();
                 getLexicon().then((newLexicon) => {
-                lexicon = newLexicon;
-                lexicon.sort((a, b) => a["romanisation"].localeCompare(b["romanisation"].toLowerCase(),
-                    "en", {sensitivity: "accent"}));
-                inputsChanged();
+                    lexicon = newLexicon;
+                    lexicon.sort((a, b) => a["romanisation"].localeCompare(b["romanisation"].toLowerCase(),
+                        "en", {sensitivity: "accent"}));
                 }).catch((reason) => {
                     errorMessage.style.display = "block";
+                }).then(() => {
+                    inputsChanged();
+                    searchByParams(params);
+                    doneLoading = true;
                 });
+            }
+
+
+            function paramsToObject(rawParams) {
+                const object = {};
+                for (const [key, value] of rawParams) {
+                    object[key] = value;
+                }
+                return object;
+            }
+
+
+            function validateParams(params) {
+                // return a new object with required parameters defaulted
+                const newParams = {...params};
+                
+                newParams.q = params.q || "";
+
+                if (!newParams.field || !['trans', 'def', 'word', 'ipa', 'pos'].includes(newParams.field)) {
+                    newParams.field = 'word';
+                }
+
+                if (!newParams.show || !['all', 'untrans', 'where', 'ipa', 'pos'].includes(newParams.show)) {
+                    newParams.show = 'all';
+                }
+
+                if (!newParams.op || !['is', 'has', 'begin', 'end'].includes(newParams.op)) {
+                    newParams.op = 'is';
+                }
+
+                return newParams;
+            }
+
+
+            function setFormState(params) {
+                exactAccentsCheckbox.checked = false;
+                if(params["accents"]) {
+                    exactAccentsCheckbox.checked = true;
+                }
+                for (const key in params) {
+                    const relevantElement = controlsForm.elements[key];
+                    if (relevantElement == undefined) {
+                        continue;
+                    }
+                    relevantElement.value = params[key];
+                }
             }
 
             
@@ -241,18 +296,34 @@
                 }
             }
 
+
+            function darkModeToggled() {
+                darkMode = !darkMode;
+                const suffixString = darkMode? "dark" : "light";
+                lightDarkButton.textContent = `Mode: ${suffixString}`;
+                const root = document.querySelector(":root");
+                root.style.setProperty("--background",          `var(--background-${suffixString})`);
+                root.style.setProperty("--content",             `var(--content-${suffixString})`);
+                root.style.setProperty("--highlight-blue",      `var(--highlight-blue-${suffixString})`);
+                root.style.setProperty("--highlight-orange",    `var(--highlight-orange-${suffixString})`);
+            }
+
+
             function inputsChanged() {
                 updateControlsVisibility();
-                doSearch();
+                if (doneLoading) {controlsForm.requestSubmit();}
             }
 
 
             function updateControlsVisibility() {
-                visibilityValue = ["all entries", "untranslatables"].includes(showSelect.value) ? "none" : "initial";
+                let noControls = ["all", "untrans"].includes(showSelect.value);
+                let visibilityValue = noControls ? "none" : "initial";
                 for (element of searchControlsGroup) {
                     element.style.display = visibilityValue;
+                    element.disabled = noControls;
                 }
             }
+
 
             function stripAccentMarks(string) {
                 let output = string;
@@ -269,31 +340,26 @@
             }
 
 
-            function doSearch() {
-
+            function searchByParams(params) {
                 if(!lexicon) {return;}
 
-                const showMode = showSelect.value;
-                const field = searchField.value;
-                let term = searchTerm.value.toLowerCase();
-
-                const handling = searchHandling.value;
-                const exactAccents = exactAccentsCheckbox.checked;
+                params = validateParams(params);
+                let term = params.q.toLowerCase();
 
                 const fieldNameMap = {
-                    "one translation": "keywords",
-                    "full definition": "definition",
-                    "romanisation": "romanisation",
-                    "pronunciation": "pronunciation",
-                    "part of speech": "partOfSpeech"
+                    "trans": "keywords",
+                    "def": "definition",
+                    "word": "romanisation",
+                    "ipa": "pronunciation",
+                    "pos": "partOfSpeech"
                 };
 
-                const relevantFieldName = fieldNameMap[field];
+                const relevantFieldName = fieldNameMap[params.field];
                 let results = [];
 
-                const startMark = (handling == "is exactly" || handling == "begins with") ? "^" : "";
-                const endMark = (handling == "is exactly" || handling == "ends with") ? "$" : "";
-                if(!exactAccents) {
+                const startMark = (params.op == "is" || params.op == "begin") ? "^" : "";
+                const endMark = (params.op == "is" || params.op == "ends") ? "$" : "";
+                if(params.accents != "exact") {
                     term = stripAccentMarks(term);
                 }
                 const regex = new RegExp(`${startMark}${term}${endMark}`, "ig"); // ignore case, global search
@@ -303,23 +369,23 @@
                     if(!lexiconEntry["include"] || lexiconEntry["romanisation"].length == 0) {
                         continue;
                     }
-                    if(showMode == "all entries") {
+                    if(params.show == "all") {
                         results.push(lexiconEntry);
                         continue;
                     }
-                    if(showMode == "untranslatables" && lexiconEntry["keywords"].includes("untranslatable")) {
+                    if(params.show == "untrans" && lexiconEntry["keywords"].includes("untranslatable")) {
                         results.push(lexiconEntry);
                         continue;
                     }
-                    if(showMode == "entries where") {
-                        if(field == "one translation") {
+                    if(params.show == "where") {
+                        if(params.field == "trans") {
                             if(lexiconEntry["keywords"].some((value) => value.match(regex))) {
                                 results.push(lexiconEntry);
                                 continue;
                             }
                         }
                         else {
-                            if(!exactAccents && stripAccentMarks(lexiconEntry[relevantFieldName]).match(regex)
+                            if(params.accents != "exact" && stripAccentMarks(lexiconEntry[relevantFieldName]).match(regex)
                             || lexiconEntry[relevantFieldName].match(regex)) {
                                 results.push(lexiconEntry);
                                 continue;
@@ -340,17 +406,7 @@
                 }
                 searchCount.textContent = results.length;
             }
-
-            function darkModeToggled() {
-                darkMode = !darkMode;
-                const suffixString = darkMode? "dark" : "light";
-                lightDarkButton.textContent = `Mode: ${suffixString}`;
-                const root = document.querySelector(":root");
-                root.style.setProperty("--background",          `var(--background-${suffixString})`);
-                root.style.setProperty("--content",             `var(--content-${suffixString})`);
-                root.style.setProperty("--highlight-blue",      `var(--highlight-blue-${suffixString})`);
-                root.style.setProperty("--highlight-orange",    `var(--highlight-orange-${suffixString})`);
-            }
+            
         </script>
 
     </body>
