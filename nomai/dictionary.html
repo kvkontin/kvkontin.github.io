@@ -88,9 +88,9 @@
 
         <div id="headingContainer">
             <h1>Nomai Language Dictionary</h1>
-            <p class="lastUpdated">Updated
-            <span class=lastUpdated>
-                4 June 2026
+            <p id="lastUpdatedContainer" class="lastUpdated">Updated
+            <span id="lastUpdated" class=lastUpdated>
+                at unknown time
             </span>
         </p>
         </div>
@@ -169,6 +169,7 @@
             let doneLoading = false;
             let darkMode = false;
 
+            const lastUpdated = document.querySelector("#lastUpdated");
             const controlsForm = document.querySelector("#controls");
             const resultsContainer = document.querySelector("#results");
             const template = document.querySelector("#resultEntryTemplate");
@@ -197,9 +198,8 @@
                 setDarkModePreference();
                 getLexicon().then((newLexicon) => {
                     lexicon = newLexicon;
-                    lexicon.sort((a, b) => a["romanisation"].localeCompare(b["romanisation"].toLowerCase(),
-                        "en", {sensitivity: "accent"}));
                 }).catch((reason) => {
+                    console.error(reason);
                     errorMessage.style.display = "block";
                 }).then(() => {
                     inputsChanged();
@@ -254,38 +254,44 @@
                 }
             }
 
+            function setLastUpdated(timeString) {
+                // Assume HTTP date format like "Fri, 15 May 2026 22:28:44 GMT"
+                const splits = timeString.split(" ");
+                const compactTime = `${splits[1]} ${splits[2]} ${splits[3]}`
+                lastUpdated.textContent = compactTime;
+            }
+
             
             function getLexicon() {
-                let lexicon = fetch(lexiconLocation).then((response) => {
+                return fetch(lexiconLocation).then((response) => {
                     if(!response.ok) {
                         throw new Error(`Cannot fetch lexicon file, response status ${response.statusText}`);
                     }
-                    else {
-                        return response.text();
-                    }
-                }).then((text) => {
-                    let lexiconBeingBuilt = [];
 
-                    let splitsByLine = text.split('\n');
-                    let tableContent = splitsByLine.slice(1); // Omit header line from data
+                    setLastUpdated(response.headers.get("last-modified"));
+                    return response.text().then((text) => {
+                        let lexicon = [];
+                        const splitsByLine = text.split('\n');
+                        const tableContent = splitsByLine.slice(1); // Omit header line from data
 
-                    for (line of tableContent) {
-                        let lineSplits = line.split('\t');
+                        for (line of tableContent) {
+                            let lineSplits = line.split('\t');
 
-                        let newEntry = {
-                            "include": lineSplits[0] == "TRUE",
-                            "partOfSpeech": lineSplits[1],
-                            "pronunciation": lineSplits[2],
-                            "romanisation": lineSplits[3],
-                            "definition": lineSplits[4],
-                            "keywords": lineSplits[5].split(',').map((string) => string.trim())
-                        };
-
-                        lexiconBeingBuilt.push(newEntry);
-                    }
-                    return lexiconBeingBuilt;
+                            let newEntry = {
+                                "include": lineSplits[0] == "TRUE",
+                                "partOfSpeech": lineSplits[1],
+                                "pronunciation": lineSplits[2],
+                                "romanisation": lineSplits[3],
+                                "definition": lineSplits[4],
+                                "keywords": lineSplits[5].split(',').map((string) => string.trim())
+                            };
+                            lexicon.push(newEntry);
+                        }
+                        lexicon.sort((a, b) => a["romanisation"].localeCompare(b["romanisation"].toLowerCase(),
+                            "en", {sensitivity: "accent"}));
+                        return lexicon;
+                    });
                 });
-                return lexicon;
             }
 
 
