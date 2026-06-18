@@ -283,8 +283,10 @@
                                 "pronunciation": lineSplits[2],
                                 "romanisation": lineSplits[3],
                                 "definition": lineSplits[4],
-                                "keywords": lineSplits[5].split(',').map((string) => string.trim())
+                                // If keywords is empty string, splitting would return 1-element array; prevent this
+                                "keywords": lineSplits[5] == "" ? [] : lineSplits[5].split(',').map((string) => string.trim())
                             };
+
                             lexicon.push(newEntry);
                         }
                         lexicon.sort((a, b) => a["romanisation"].localeCompare(b["romanisation"].toLowerCase(),
