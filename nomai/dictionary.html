@@ -375,7 +375,7 @@
                     if(!lexiconEntry["include"] || lexiconEntry["romanisation"].length == 0) {
                         continue;
                     }
-                    if(params.show == "all") {
+                    if(params.show == "all" && lexiconEntry["keywords"].length != 0) {
                         results.push(lexiconEntry);
                         continue;
                     }
