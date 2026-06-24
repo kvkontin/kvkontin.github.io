@@ -370,7 +370,7 @@
                 if(params.accents != "exact") {
                     term = stripAccentMarks(term);
                 }
-                const regex = new RegExp(`${startMark}${term}${endMark}`, "ig"); // ignore case, global search
+                const regex = new RegExp(`${startMark}${RegExp.escape(term)}${endMark}`, "ig"); // ignore case, global search
 
                 for (lexiconEntry of lexicon) {
 
