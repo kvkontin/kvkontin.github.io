@@ -24,6 +24,12 @@ main {
     margin: auto;
     max-width: 600px;
 }
+.block-image {
+    max-width: 600px;
+    display: block;
+    margin: 30px auto;
+    width: 60%;
+}
 h1 {
     color: var(--highlight-blue);
     font-size: 28px;
@@ -36,6 +42,9 @@ h3 {
     color: var(--highlight-orange);
 }
 a {
+    color: var(--highlight-blue);
+}
+i {
     color: var(--highlight-blue);
 }
 #lightDarkButton {

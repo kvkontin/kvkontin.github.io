@@ -13,6 +13,10 @@
             main {
                 padding: 10px;
             }
+            .block-poem {
+                margin: 20px 80px;
+                text-align: center;
+            }
         </style>
     </head>
 
@@ -23,7 +27,30 @@
         
         <main>
             <h1>Nomai Language Home</h1>
-            <p><i>Siwajoo dalté!</i> Hello, friend!</p>
+            
+            <img class="block-image"
+                src="/assets/nomai/spiral_welcome_darkmode.svg"
+                src-dark="/assets/nomai/spiral_welcome_dark.svg"
+                src-light="/assets/nomai/spiral_welcome_light.svg"
+                alt="Nomai language written in a spiral">
+
+            <div class="block-poem">
+                <p>
+                    <i>Wal coci héf fyja llendydé wa buná mivel hleefu madavee pes!</i>
+                </p>
+                <p>
+                    <i>Cýy cadwix cai radái sapejau diis.</i>
+                </p>
+            </div>
+
+            <div class="block-poem">
+                <p>
+                    Be welcomed in this place, visitors who come seeking the language of the Vessels!
+                </p>
+                <p>
+                    Let your curiosity meet our records.
+                </p>
+            </div>
 
             <h2 id="What_is_this">What is this?</h2>
 
@@ -124,6 +151,10 @@
                 root.style.setProperty("--content",             `var(--content-${suffixString})`);
                 root.style.setProperty("--highlight-blue",      `var(--highlight-blue-${suffixString})`);
                 root.style.setProperty("--highlight-orange",    `var(--highlight-orange-${suffixString})`);
+                for (const image of document.querySelectorAll("img")) {
+                    let new_src = image.attributes[`src-${suffixString}`];
+                    image.src = new_src ? new_src.value : image.src;
+                }
             }
         </script>
 
