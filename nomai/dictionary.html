@@ -219,7 +219,7 @@
                 // return a new object with required parameters defaulted
                 const newParams = {...params};
                 
-                newParams.q = params.q || "";
+                newParams.q = params.q ?? "";
 
                 if (!newParams.field || !['trans', 'def', 'word', 'ipa', 'pos'].includes(newParams.field)) {
                     newParams.field = 'word';
