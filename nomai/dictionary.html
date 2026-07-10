@@ -25,7 +25,7 @@
                 padding-top: 4px;
                 padding-bottom: 8px;
             }
-            #selections, #searchBar, #accentHandlingInner {
+            #selections, #searchBar, #accentHandling {
                 display: inline-block;
             }
             input, button, select {
@@ -121,10 +121,8 @@
                 </select>
 
                 <div id="accentHandling">
-                    <div id="accentHandlingInner">
-                        <input id="exactAccents" type="checkbox" name="accents" value="exact" checked>
-                        <label for="exactAccents">Match accent marks</label>
-                    </div>
+                    <input id="exactAccents" type="checkbox" name="accents" value="exact" checked>
+                    <label for="exactAccents">Match accent marks</label>
                 </div>
             </div>
 
@@ -178,11 +176,10 @@
             const searchField = document.querySelector("#searchField");
             const searchHandling = document.querySelector("#searchHandling");
             const accentHandling = document.querySelector("#accentHandling");
-            const accentHandlingInner = document.querySelector("#accentHandlingInner");
             const exactAccentsCheckbox = document.querySelector("#exactAccents")
             const searchTerm = document.querySelector("#searchTerm");
             const searchButton = document.querySelector("#searchButton");
-            const searchControlsGroup = [searchField, searchHandling, accentHandling, accentHandlingInner, searchTerm, searchButton];
+            const searchControlsGroup = [searchField, searchHandling, accentHandling, searchTerm, searchButton];
             const errorMessage = document.querySelector("#errorMessage");
             const lightDarkButton = document.querySelector("#lightDarkButton");
 
@@ -325,7 +322,7 @@
 
             function updateControlsVisibility() {
                 let noControls = ["all", "untrans"].includes(showSelect.value);
-                let visibilityValue = noControls ? "none" : "initial";
+                let visibilityValue = noControls ? "none" : "inline-block";
                 for (element of searchControlsGroup) {
                     element.style.display = visibilityValue;
                     element.disabled = noControls;
