@@ -55,7 +55,7 @@
 
     <body>
         <a href="/nomai/home.html">&lt; back to Nomai home</a>
-        <button id="lightDarkButton" onclick="darkModeToggled()">Mode: dark</button>
+        <button id="lightDarkButton">Mode: dark</button>
 
         
         <main>
@@ -2221,25 +2221,13 @@
         </footer>
 
 
-        <script>
+        <script type="module">
+            import Lightdark from '../assets/common/modules/lightdark.js';
             const lightDarkButton = document.querySelector("#lightDarkButton");
-            let darkMode = false;
+            const lightdark = new Lightdark(window, darkModeToggled);
+            lightDarkButton.addEventListener("click", () => lightdark.toggle());
 
-            init();
-
-            function init() {
-                setDarkModePreference();
-            }
-
-            function setDarkModePreference () {
-                darkMode = false;
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    darkMode = true;
-                }
-            }
-
-            function darkModeToggled() {
-                darkMode = !darkMode;
+            function darkModeToggled(darkMode) {
                 const suffixString = darkMode? "dark" : "light";
                 lightDarkButton.textContent = `Mode: ${suffixString}`;
                 const root = document.querySelector(":root");
