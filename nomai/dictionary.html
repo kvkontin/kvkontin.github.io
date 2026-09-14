@@ -84,7 +84,7 @@
 
     <body>
         <a href="/nomai/home.html">&lt; back to Nomai home</a>
-        <button id="lightDarkButton" onclick="darkModeToggled()">Mode: dark</button>
+        <button id="lightDarkButton">Mode: dark</button>
 
         <div id="headingContainer">
             <h1>Nomai Language Dictionary</h1>
@@ -162,10 +162,10 @@
             </p>
         </footer>
 
-        <script>
+        <script type="module">
+            import Lightdark from '../assets/common/modules/lightdark.js';
 
             let doneLoading = false;
-            let darkMode = false;
 
             const lastUpdated = document.querySelector("#lastUpdated");
             const controlsForm = document.querySelector("#controls");
@@ -186,13 +186,15 @@
             const lexiconLocation = "../assets/nomai/lexicon.tsv";
             let lexicon = [];
 
+            const lightdark = new Lightdark(window, darkModeToggled);
+            lightDarkButton.addEventListener("click", () => lightdark.toggle());
+
             init();
 
 
             function init() {
                 const params = validateParams(paramsToObject(new URLSearchParams(location.search)));
                 setFormState(params);
-                setDarkModePreference();
                 getLexicon().then((newLexicon) => {
                     lexicon = newLexicon;
                 }).catch((reason) => {
@@ -271,7 +273,7 @@
                         const splitsByLine = text.split('\n');
                         const tableContent = splitsByLine.slice(1); // Omit header line from data
 
-                        for (line of tableContent) {
+                        for (const line of tableContent) {
                             let lineSplits = line.split('\t');
 
                             let newEntry = {
@@ -293,17 +295,7 @@
                 });
             }
 
-
-            function setDarkModePreference () {
-                darkMode = false;
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    darkMode = true;
-                }
-            }
-
-
-            function darkModeToggled() {
-                darkMode = !darkMode;
+            function darkModeToggled(darkMode) {
                 const suffixString = darkMode? "dark" : "light";
                 lightDarkButton.textContent = `Mode: ${suffixString}`;
                 const root = document.querySelector(":root");
@@ -323,7 +315,7 @@
             function updateControlsVisibility() {
                 let noControls = ["all", "untrans"].includes(showSelect.value);
                 let visibilityValue = noControls ? "none" : "inline-block";
-                for (element of searchControlsGroup) {
+                for (const element of searchControlsGroup) {
                     element.style.display = visibilityValue;
                     element.disabled = noControls;
                 }
@@ -338,7 +330,7 @@
                     ['ó', 'o'],
                     ['ý', 'y'],
                 ];
-                for (entry of mapping) {
+                for (const entry of mapping) {
                     output = output.replaceAll(entry[0], entry[1]);
                 }
                 return output;
@@ -369,7 +361,7 @@
                 }
                 const regex = new RegExp(`${startMark}${RegExp.escape(term)}${endMark}`, "ig"); // ignore case, global search
 
-                for (lexiconEntry of lexicon) {
+                for (const lexiconEntry of lexicon) {
 
                     if(!lexiconEntry["include"] || lexiconEntry["romanisation"].length == 0) {
                         continue;
@@ -401,7 +393,7 @@
 
                 resultsContainer.replaceChildren();
 
-                for (result of results) {
+                for (const result of results) {
                     const clone = document.importNode(template.content, true);
                     clone.querySelector(".romanisation").textContent = result["romanisation"];
                     clone.querySelector(".pronunciation").textContent = `/${result["pronunciation"]}/`;
