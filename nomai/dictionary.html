@@ -99,7 +99,7 @@
             <div id="selections">
 
                 <label for="show">Show</label>
-                <select id="show" name="show" oninput="inputsChanged()">
+                <select id="show" name="show">
                     <option value="all">all entries</option>
                     <option value="untrans">untranslatables</option>
                     <option value="where">entries where</option>
@@ -182,6 +182,7 @@
             const searchControlsGroup = [searchField, searchHandling, accentHandling, searchTerm, searchButton];
             const errorMessage = document.querySelector("#errorMessage");
             const lightDarkButton = document.querySelector("#lightDarkButton");
+            showSelect.addEventListener("input", inputsChanged);
 
             const lexiconLocation = "../assets/nomai/lexicon.tsv";
             let lexicon = [];
